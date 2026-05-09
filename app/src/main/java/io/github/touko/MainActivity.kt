@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.toArgb
 import androidx.core.view.WindowCompat
 import androidx.navigation3.runtime.NavEntry
+import com.tencent.mmkv.MMKV
 import io.github.touko.navigation.LoginPage
 import io.github.touko.navigation.MainPage
 import io.github.touko.navigation.RegisterPage
@@ -28,6 +29,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        MMKV.initialize(this)
         window.isNavigationBarContrastEnforced = false
         setContent {
             Im_android_appTheme {
