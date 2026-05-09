@@ -37,21 +37,15 @@ class RegisterViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            try {
-                val response = HttpClient.userApi.register(RegisterRequest(username, password))
-                if (response.code == 200) {
-                    onSuccess()
-                } else {
-                    errorMessage = response.message
-                }
-            } catch (e: Exception) {
-                errorMessage = "注册失败: ${e.message}"
-            } finally {
-                isLoading = false
+            val response = HttpClient.userApi.register(RegisterRequest(username, password))
+            if (response.code == 200) {
+                onSuccess()
+            } else {
+                errorMessage = response.message
             }
+            isLoading = false
         }
     }
-
 
 
     fun isValidForm(): Boolean {

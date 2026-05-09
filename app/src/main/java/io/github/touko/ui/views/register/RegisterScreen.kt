@@ -1,11 +1,24 @@
 package io.github.touko.ui.views.register
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.*
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,8 +33,7 @@ import io.github.touko.navigation.MainPage
 
 @Composable
 fun RegisterScreen(
-    navigator: MutableList<Any>,
-    viewModel: RegisterViewModel = viewModel()
+    navigator: MutableList<Any>, viewModel: RegisterViewModel = viewModel()
 ) {
     Column(
         modifier = Modifier
@@ -42,12 +54,9 @@ fun RegisterScreen(
         ElevatedCard(
             colors = CardDefaults.cardColors().copy(
                 containerColor = Color.White,
-            ),
-            elevation = CardDefaults.cardElevation(
+            ), elevation = CardDefaults.cardElevation(
                 defaultElevation = 6.dp
-            ),
-            modifier = Modifier
-                .padding(20.dp)
+            ), modifier = Modifier.padding(20.dp)
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 OutlinedTextField(
@@ -86,17 +95,10 @@ fun RegisterScreen(
 
                 Spacer(modifier = Modifier.height(50.dp))
 
-                viewModel.errorMessage?.let {
-                    if (it.isNotEmpty()) {
-                        Text(viewModel.errorMessage!!)
-                    }
-                }
-
                 Row(modifier = Modifier.align(Alignment.End)) {
                     // 返回登录页面
                     IconButton(
-                        onClick = { navigator.add(LoginPage) }
-                    ) {
+                        onClick = { navigator.add(LoginPage) }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = null,
@@ -114,13 +116,10 @@ fun RegisterScreen(
                         )
                     ) {
                         Icon(
-                            imageVector = Icons.Filled.Check,
-                            contentDescription = null
+                            imageVector = Icons.Filled.Check, contentDescription = null
                         )
                     }
-
                 }
-
             }
         }
     }

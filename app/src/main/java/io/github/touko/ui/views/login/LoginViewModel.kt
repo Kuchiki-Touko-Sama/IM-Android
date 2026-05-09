@@ -33,7 +33,7 @@ class LoginViewModel : ViewModel() {
             isLoading = true
             errorMessage = null
             val response = HttpClient.userApi.login(LoginRequest(username, password))
-            if (response.code == 200) {
+            if (response.code == 200 && response.data != null) {
                 TokenManager.saveToken(response.data.token)
                 onSuccess()
             } else {
