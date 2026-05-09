@@ -107,7 +107,7 @@ fun RegisterScreen(
                     // 提交注册表单
                     IconButton(
                         onClick = {
-                            viewModel.register { navigator.add(MainPage) }
+                            viewModel.register { navigator.add(LoginPage) }
                         },
                         enabled = !viewModel.isLoading,
                         colors = IconButtonDefaults.iconButtonColors().copy(

@@ -53,7 +53,7 @@ fun LoginScreen(
             Column(modifier = Modifier.padding(20.dp)) {
                 OutlinedTextField(
                     value = viewModel.username,
-                    onValueChange = viewModel::onUsernameChange,
+                    onValueChange = viewModel::updateUsername,
                     label = { Text("username") },
                     maxLines = 1,
                     shape = RoundedCornerShape(
@@ -65,7 +65,7 @@ fun LoginScreen(
 
                 OutlinedTextField(
                     value = viewModel.password,
-                    onValueChange = viewModel::onPasswordChange,
+                    onValueChange = viewModel::updatePassword,
                     label = { Text("password") },
                     visualTransformation = PasswordVisualTransformation(),
                     shape = RoundedCornerShape(

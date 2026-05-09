@@ -9,17 +9,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.touko.data.state.CurrentUserState
 import io.github.touko.ui.component.FriendList
 import io.github.touko.ui.component.ToolBar
 import io.github.touko.ui.component.UserTopBar
+import io.github.touko.ui.views.login.LoginViewModel
 
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    navigator: MutableList<Any>,
+    viewModel: MainViewModel = viewModel()
+) {
     Scaffold(
         topBar = {
-            UserTopBar("Touko", "online", null)
+            UserTopBar(CurrentUserState.username, "online", null)
         },
         modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
@@ -29,6 +35,7 @@ fun MainScreen() {
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
             FriendList(
+                friends = viewModel.friendList,
                 modifier = Modifier.fillMaxSize(),
             )
             ToolBar(

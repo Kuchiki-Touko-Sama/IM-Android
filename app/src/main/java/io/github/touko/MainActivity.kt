@@ -1,19 +1,14 @@
 package io.github.touko
 
-import android.graphics.Color
-import android.os.Build
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.mutableStateListOf
 import androidx.navigation3.ui.NavDisplay
 import io.github.touko.ui.theme.Im_android_appTheme
 import androidx.compose.runtime.remember
-
-import androidx.compose.ui.graphics.toArgb
-import androidx.core.view.WindowCompat
 import androidx.navigation3.runtime.NavEntry
 import com.tencent.mmkv.MMKV
 import io.github.touko.navigation.LoginPage
@@ -27,10 +22,11 @@ import io.github.touko.ui.views.register.RegisterScreen
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         MMKV.initialize(this)
         window.isNavigationBarContrastEnforced = false
+
         setContent {
             Im_android_appTheme {
                 val navigator = remember { mutableStateListOf<Any>(LoginPage) }
@@ -46,9 +42,9 @@ class MainActivity : ComponentActivity() {
                             RegisterScreen(navigator)
                         }
                         is MainPage -> NavEntry(key) {
-                            MainScreen()
+                            MainScreen(navigator)
                         }
-                        else -> NavEntry(key) { MainScreen() }
+                        else -> NavEntry(key) { MainScreen(navigator) }
                     }
                 }
             }

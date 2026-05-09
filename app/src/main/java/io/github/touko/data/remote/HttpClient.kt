@@ -1,5 +1,7 @@
 package io.github.touko.data.remote
 
+import io.github.touko.data.local.TokenManager
+import io.github.touko.data.remote.api.FriendApi
 import io.github.touko.data.remote.api.UserApi
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
@@ -20,7 +22,7 @@ object HttpClient {
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
-        .addInterceptor(ErrorInterceptor())
+        .addInterceptor(GlobalInterceptor())
         .build()
 
     val userApi: UserApi by lazy {
@@ -31,19 +33,37 @@ object HttpClient {
             .build()
             .create(UserApi::class.java)
     }
+    val friendApi: FriendApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+            .create(FriendApi::class.java)
+    }
 }
 
-class ErrorInterceptor : Interceptor {
+class GlobalInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val response = chain.proceed(chain.request())
-
+        val token = TokenManager.getToken()
+        val request = chain.request()
+            .newBuilder()
+            .apply {
+                if (!token.isNullOrEmpty()) {
+                    addHeader(
+                        "Authorization",
+                        token
+                    )
+                }
+            }
+            .build()
+        val response = chain.proceed(request)
         if (!response.isSuccessful) {
             when (response.code) {
                 401 -> { /* 发送全局 EventBus 或跳转登录 */ }
                 else -> { /* 抛出自定义网络异常 */ }
             }
         }
-
         return response
     }
 }

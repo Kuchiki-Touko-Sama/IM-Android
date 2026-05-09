@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.touko.data.local.TokenManager
 import io.github.touko.data.model.request.LoginRequest
 import io.github.touko.data.remote.HttpClient
+import io.github.touko.data.state.CurrentUserState
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -17,11 +18,11 @@ class LoginViewModel : ViewModel() {
     var errorMessage by mutableStateOf<String?>(null)
 
 
-    fun onUsernameChange(newValue: String) {
+    fun updateUsername(newValue: String) {
         username = newValue
     }
 
-    fun onPasswordChange(newValue: String) {
+    fun updatePassword(newValue: String) {
         password = newValue
     }
 
@@ -35,6 +36,10 @@ class LoginViewModel : ViewModel() {
             val response = HttpClient.userApi.login(LoginRequest(username, password))
             if (response.code == 200 && response.data != null) {
                 TokenManager.saveToken(response.data.token)
+                // 设置当前登录用户状态
+                println(response.data)
+                CurrentUserState.uid = response.data.userId
+                CurrentUserState.username = username
                 onSuccess()
             } else {
                 errorMessage = response.message
