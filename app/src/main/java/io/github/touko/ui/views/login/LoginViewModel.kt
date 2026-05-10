@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.touko.data.local.TokenManager
 import io.github.touko.data.local.LocalUserManager
 import io.github.touko.data.model.request.LoginRequest
+import io.github.touko.data.remote.ChatWebSocketManager
 import io.github.touko.data.remote.HttpClient
 import io.github.touko.data.state.CurrentUserState
 import kotlinx.coroutines.launch
@@ -40,6 +41,9 @@ class LoginViewModel : ViewModel() {
                 // 设置当前登录用户状态
                 CurrentUserState.login(response.data.userId, username)
                 LocalUserManager.changeCurrentUser(response.data.userId, username)
+                ChatWebSocketManager.connect(response.data.userId)
+                username = ""
+                password = ""
                 onSuccess()
             } else {
                 errorMessage = response.message

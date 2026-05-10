@@ -30,7 +30,7 @@ class MainViewModel : ViewModel() {
     var friendList by mutableStateOf<List<Friendship>>(emptyList())
     var personList by mutableStateOf<List<TargetUser>>(emptyList())
     var friendApplyList by mutableStateOf<List<FriendshipApply>>(emptyList())
-    var currentMainTab by mutableStateOf(CurrentMainTab.FriendManager)
+    var currentMainTab by mutableStateOf(CurrentMainTab.ChatList)
 
     private var syncJob: Job? = null
 
@@ -42,13 +42,12 @@ class MainViewModel : ViewModel() {
 
     private fun startSync() {
         syncJob?.cancel()
-
         syncJob = viewModelScope.launch {
             while (isActive) {
                 val uid = CurrentUserState.uid
                 if (uid == 0) {
-                    NavigatorState.replace(LoginPage)
-                    cancel()
+                    delay(1000)
+                    continue
                 }
                 val response = HttpClient.friendApi.getFriendship(uid)
                 if (response.code == 200 && response.data != null) {
@@ -63,8 +62,7 @@ class MainViewModel : ViewModel() {
                         CurrentUserState.friendships[apply.senderId] = FriendState.PENDING
                     }
                 }
-                // 每0.5秒同步好友列表
-                delay(500)
+                delay(1000)
             }
         }
     }

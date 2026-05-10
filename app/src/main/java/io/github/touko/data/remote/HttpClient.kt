@@ -1,7 +1,9 @@
 package io.github.touko.data.remote
 
+import android.util.Log
 import io.github.touko.data.local.TokenManager
 import io.github.touko.data.remote.api.FriendApi
+import io.github.touko.data.remote.api.MessageApi
 import io.github.touko.data.remote.api.UserApi
 import io.github.touko.navigation.NavigatorState
 import io.github.touko.event.GlobalEvent
@@ -47,6 +49,15 @@ object HttpClient {
             .build()
             .create(FriendApi::class.java)
     }
+
+    val messageApi: MessageApi by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+            .build()
+            .create(MessageApi::class.java)
+    }
 }
 
 class GlobalInterceptor : Interceptor {
@@ -63,6 +74,7 @@ class GlobalInterceptor : Interceptor {
                 }
             }
             .build()
+        Log.d("im-http", "intercept: $request")
         val response = chain.proceed(request)
         if (!response.isSuccessful) {
             when (response.code) {

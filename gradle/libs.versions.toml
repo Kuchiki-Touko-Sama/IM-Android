@@ -21,6 +21,8 @@ nav3-core = "1.1.1"
 material3 = "1.5.0-alpha19"
 
 datastore = "1.2.1"
+runtime = "1.11.1"
+ui = "1.11.1"
 
 
 
@@ -58,6 +60,8 @@ androidx-navigation3-runtime = { group = "androidx.navigation3", name = "navigat
 # dataStore
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastore" }
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 
 
 

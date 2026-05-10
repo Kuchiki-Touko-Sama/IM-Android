@@ -37,6 +37,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.datastore.core)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -50,6 +51,7 @@ dependencies {
     // nav3
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.ui)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -5,20 +5,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
-import androidx.navigation3.ui.NavDisplay
-import io.github.touko.ui.theme.Im_android_appTheme
-import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavEntry
+import androidx.navigation3.ui.NavDisplay
 import com.tencent.mmkv.MMKV
 import io.github.touko.data.local.LocalUserManager
-import io.github.touko.navigation.NavigatorState
-import io.github.touko.event.GlobalEvent
+import io.github.touko.data.remote.ChatWebSocketManager
 import io.github.touko.navigation.ChatPage
 import io.github.touko.navigation.LoginPage
 import io.github.touko.navigation.MainPage
+import io.github.touko.navigation.NavigatorState
 import io.github.touko.navigation.RegisterPage
+import io.github.touko.ui.theme.Im_android_appTheme
 import io.github.touko.ui.views.chat.ChatScreen
 import io.github.touko.ui.views.home.MainScreen
 import io.github.touko.ui.views.login.LoginScreen
@@ -26,7 +23,6 @@ import io.github.touko.ui.views.register.RegisterScreen
 
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -37,9 +33,14 @@ class MainActivity : ComponentActivity() {
         } else {
             MainPage
         }
+        val userId = LocalUserManager.getUid()
+        if (userId != 0)
+            ChatWebSocketManager.connect(userId)
         setContent {
             Im_android_appTheme {
-                NavigatorState.navigate(startPage)
+                if (NavigatorState.backStack.isEmpty()) {
+                    NavigatorState.replace(startPage)
+                }
                 NavDisplay(
                     backStack = NavigatorState.backStack,
                     onBack = { NavigatorState.back() },
@@ -48,9 +49,11 @@ class MainActivity : ComponentActivity() {
                         is LoginPage -> NavEntry(key) {
                             LoginScreen()
                         }
+
                         is RegisterPage -> NavEntry(key) {
                             RegisterScreen()
                         }
+
                         is MainPage -> NavEntry(key) {
                             MainScreen()
                         }
