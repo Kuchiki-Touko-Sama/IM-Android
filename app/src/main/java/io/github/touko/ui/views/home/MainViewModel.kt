@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.touko.data.local.LocalUserManager
 import io.github.touko.data.model.request.SendFriendApplyRequest
 import io.github.touko.data.model.response.Friendship
 import io.github.touko.data.model.response.FriendshipApply
@@ -12,7 +13,10 @@ import io.github.touko.data.model.response.TargetUser
 import io.github.touko.data.remote.HttpClient
 import io.github.touko.data.state.CurrentUserState
 import io.github.touko.data.state.FriendState
+import io.github.touko.event.GlobalEvent
+import io.github.touko.ui.views.login.LoginScreen
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -29,27 +33,36 @@ class MainViewModel : ViewModel() {
     private var syncJob: Job? = null
 
     init {
+        CurrentUserState.uid = LocalUserManager.getUid()
+        CurrentUserState.username = LocalUserManager.getUsername().toString()
         startSync()
     }
 
     private fun startSync() {
         syncJob?.cancel()
-        val uid = CurrentUserState.uid
+
         syncJob = viewModelScope.launch {
             while (isActive) {
-                val response = HttpClient.friendApi.getFriendship(CurrentUserState.uid)
+                val uid = CurrentUserState.uid
+                if (uid == 0) {
+                    GlobalEvent.unauthorized.emit(Unit)
+                    cancel()
+                }
+                val response = HttpClient.friendApi.getFriendship(uid)
                 if (response.code == 200 && response.data != null) {
                     friendList = response.data
                     for (friendship in response.data)
                         CurrentUserState.friendships[friendship.friendId] = FriendState.FRIEND
                 }
-                val responseOfFriendship = HttpClient.friendApi.getFriendshipApply(CurrentUserState.uid)
+                val responseOfFriendship = HttpClient.friendApi.getFriendshipApply(uid)
                 if (responseOfFriendship.code == 200 && responseOfFriendship.data != null) {
                    friendApplyList  = responseOfFriendship.data
+                    for (apply in responseOfFriendship.data) {
+                        CurrentUserState.friendships[apply.senderId] = FriendState.PENDING
+                    }
                 }
-
-                // 每10秒同步一次好友列表
-                delay(10_000)
+                // 每0.5秒同步好友列表
+                delay(500)
             }
         }
     }
@@ -91,6 +104,20 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    fun acceptFriendApply(friendShipId: Int, senderId: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            val response = HttpClient.friendApi.acceptApply(friendShipId)
+            if (response.code == 200 && response.data != null) {
+                CurrentUserState.friendships[senderId] = FriendState.FRIEND
+                // TODO: 提示成功添加
+            } else {
+                errorMessage = response.message
+            }
+            isLoading = false
+        }
+    }
     override fun onCleared() {
         super.onCleared()
         syncJob?.cancel()

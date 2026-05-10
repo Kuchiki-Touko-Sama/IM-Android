@@ -81,9 +81,7 @@ fun LoginScreen(
 
                    Row(modifier = Modifier.align(Alignment.End)) {
                        // 跳转到注册页面
-                       IconButton(
-                           onClick = { navigator.add(RegisterPage) }
-                       ) {
+                       IconButton({ navigator.add(RegisterPage) }) {
                            Icon(
                                imageVector = Icons.Default.PersonAdd,
                                contentDescription = null,

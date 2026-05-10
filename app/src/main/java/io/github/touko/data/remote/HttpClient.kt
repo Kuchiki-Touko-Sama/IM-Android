@@ -3,6 +3,10 @@ package io.github.touko.data.remote
 import io.github.touko.data.local.TokenManager
 import io.github.touko.data.remote.api.FriendApi
 import io.github.touko.data.remote.api.UserApi
+import io.github.touko.event.GlobalEvent
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -44,6 +48,7 @@ object HttpClient {
 }
 
 class GlobalInterceptor : Interceptor {
+    @OptIn(DelicateCoroutinesApi::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = TokenManager.getToken()
         val request = chain.request()
@@ -60,7 +65,12 @@ class GlobalInterceptor : Interceptor {
         val response = chain.proceed(request)
         if (!response.isSuccessful) {
             when (response.code) {
-                401 -> { /* 发送全局 EventBus 或跳转登录 */ }
+                401 -> {
+                    TokenManager.clearToken()
+                    GlobalScope.launch {
+                        GlobalEvent.unauthorized.emit(Unit)
+                    }
+                }
                 else -> { /* 抛出自定义网络异常 */ }
             }
         }

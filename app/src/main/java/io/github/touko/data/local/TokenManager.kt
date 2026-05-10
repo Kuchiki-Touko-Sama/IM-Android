@@ -9,6 +9,4 @@ object TokenManager {
 
     fun getToken(): String? = MMKV.defaultMMKV().decodeString(KEY)
     fun clearToken() = MMKV.defaultMMKV().removeValueForKey(KEY)
-    fun isLogin(): Boolean = !getToken().isNullOrEmpty()
-
 }

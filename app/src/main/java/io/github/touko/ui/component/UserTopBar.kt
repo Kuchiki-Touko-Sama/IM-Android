@@ -12,7 +12,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -37,12 +40,10 @@ fun UserTopBar(
 ) {
     TopAppBar(
         title = {
-            // 使用 Row 水平排列头像和文字信息
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.padding(start = 8.dp)
             ) {
-                // 1. 头像部分
                 Box(contentAlignment = Alignment.BottomEnd) {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
@@ -52,7 +53,7 @@ fun UserTopBar(
                             .clip(CircleShape),
                         tint = MaterialTheme.colorScheme.primary
                     )
-                    // 2. 在线状态圆点
+                    // 在线状态圆点
                     Surface(
                         shape = CircleShape,
                         color = Color.Green,
@@ -75,6 +76,9 @@ fun UserTopBar(
                     )
                 }
             }
+        },
+        actions = {
+            DropdownMenu()
         },
         modifier = Modifier.clip(
             RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)

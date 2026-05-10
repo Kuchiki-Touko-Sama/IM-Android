@@ -11,7 +11,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.HourglassFull
 import androidx.compose.material.icons.filled.Person2
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -35,7 +37,7 @@ fun PersonList(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(0.dp),
-        contentPadding = PaddingValues(bottom = 100.dp),
+        contentPadding = PaddingValues(bottom = 10.dp),
         modifier = modifier
     ) {
         items(items = people, key = { it.userId }) { person ->
@@ -57,12 +59,16 @@ fun PersonList(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = MaterialTheme.colorScheme.primary
                         ),
+                        enabled = when(CurrentUserState.friendships[person.userId]) {
+                            PENDING, FRIEND -> false
+                            NONE, null -> true
+                        }
                     ) {
                         Icon(
                             imageVector = when(CurrentUserState.friendships[person.userId]) {
-                                PENDING -> Icons.Default.Check
+                                PENDING -> Icons.Default.HourglassFull
                                 FRIEND -> Icons.Default.Person2
-                                NONE, null -> Icons.Default.Add
+                                NONE, null -> Icons.Default.PersonAdd
                             },
                             contentDescription = null
                         )

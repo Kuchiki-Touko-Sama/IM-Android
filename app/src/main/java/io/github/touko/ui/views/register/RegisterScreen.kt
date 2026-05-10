@@ -24,14 +24,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.touko.navigation.LoginPage
-import io.github.touko.navigation.MainPage
 
 @Composable
 fun RegisterScreen(
@@ -94,15 +92,14 @@ fun RegisterScreen(
                         visualTransformation = PasswordVisualTransformation(),
                         shape = RoundedCornerShape(
                             20.dp
-                        )
+                        ),
                     )
 
                     Spacer(modifier = Modifier.height(50.dp))
 
                     Row(modifier = Modifier.align(Alignment.End)) {
                         // 返回登录页面
-                        IconButton(
-                            onClick = { navigator.add(LoginPage) }) {
+                        IconButton({ navigator.add(LoginPage) }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = null,
@@ -120,7 +117,8 @@ fun RegisterScreen(
                             )
                         ) {
                             Icon(
-                                imageVector = Icons.Filled.Check, contentDescription = null
+                                imageVector = Icons.Filled.Check,
+                                contentDescription = null
                             )
                         }
                     }

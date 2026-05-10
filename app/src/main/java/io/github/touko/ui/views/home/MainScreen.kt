@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,6 +29,8 @@ enum class CurrentMainTab {
     Settings
 }
 
+
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainScreen(
@@ -43,7 +46,6 @@ fun MainScreen(
                     "online",
                     null
                 )
-
                 else -> null
             }
         },
@@ -82,13 +84,14 @@ fun MainScreen(
                                 people = viewModel.personList,
                                 onAddPerson = viewModel::sendFriendshipApply
                             )
+                            HorizontalDivider(modifier = Modifier.padding(10.dp))
                         }
 
                         if (viewModel.friendApplyList.isNotEmpty()) {
                             Text("待处理的好友申请", modifier = Modifier.padding(start = 20.dp))
                             PendingApplyList(
                                 applyList = viewModel.friendApplyList,
-                                onAddPerson = {}
+                                onAccept = viewModel::acceptFriendApply
                             )
                         }
                     }
@@ -109,6 +112,5 @@ fun MainScreen(
             )
         }
     }
-
 }
 
