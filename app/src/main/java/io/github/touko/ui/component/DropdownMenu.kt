@@ -19,16 +19,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.touko.data.local.LocalUserManager
-import io.github.touko.data.local.TokenManager
-import io.github.touko.event.GlobalEvent
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import io.github.touko.navigation.NavigatorState
+import io.github.touko.navigation.LoginPage
 
-
-@OptIn(DelicateCoroutinesApi::class)
 @Composable
 fun DropdownMenu( modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
@@ -54,9 +48,7 @@ fun DropdownMenu( modifier: Modifier = Modifier) {
                 onClick = {
                     expanded = false
                     LocalUserManager.logout()
-                    GlobalScope.launch {
-                        GlobalEvent.unauthorized.emit(Unit)
-                    }
+                    NavigatorState.replace(LoginPage)
                 }
             )
         }

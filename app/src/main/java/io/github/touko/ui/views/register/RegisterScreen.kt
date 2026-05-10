@@ -12,6 +12,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -29,11 +31,12 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.touko.navigation.NavigatorState
 import io.github.touko.navigation.LoginPage
 
 @Composable
 fun RegisterScreen(
-    navigator: MutableList<Any>, viewModel: RegisterViewModel = viewModel()
+     viewModel: RegisterViewModel = viewModel()
 ) {
     Surface {
         Column(
@@ -66,6 +69,12 @@ fun RegisterScreen(
                         onValueChange = viewModel::updateUsername,
                         label = { Text("username") },
                         maxLines = 1,
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Person,
+                                contentDescription = null
+                            )
+                        },
                         shape = RoundedCornerShape(
                             20.dp
                         )
@@ -78,6 +87,13 @@ fun RegisterScreen(
                         onValueChange = viewModel::updatePassword,
                         label = { Text("password") },
                         visualTransformation = PasswordVisualTransformation(),
+                        maxLines = 1,
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = null
+                            )
+                        },
                         shape = RoundedCornerShape(
                             20.dp
                         )
@@ -90,6 +106,13 @@ fun RegisterScreen(
                         onValueChange = viewModel::updateConfirmPassword,
                         label = { Text("confirm password") },
                         visualTransformation = PasswordVisualTransformation(),
+                        maxLines = 1,
+                        leadingIcon = {
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = null
+                            )
+                        },
                         shape = RoundedCornerShape(
                             20.dp
                         ),
@@ -99,7 +122,7 @@ fun RegisterScreen(
 
                     Row(modifier = Modifier.align(Alignment.End)) {
                         // 返回登录页面
-                        IconButton({ navigator.add(LoginPage) }) {
+                        IconButton({ NavigatorState.navigate(LoginPage) }) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                                 contentDescription = null,
@@ -108,7 +131,7 @@ fun RegisterScreen(
                         // 提交注册表单
                         IconButton(
                             onClick = {
-                                viewModel.register { navigator.add(LoginPage) }
+                                viewModel.register { NavigatorState.navigate(LoginPage) }
                             },
                             enabled = !viewModel.isLoading,
                             colors = IconButtonDefaults.iconButtonColors().copy(

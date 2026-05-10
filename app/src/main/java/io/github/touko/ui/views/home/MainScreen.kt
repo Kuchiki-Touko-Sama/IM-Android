@@ -30,14 +30,9 @@ enum class CurrentMainTab {
 }
 
 
-
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MainScreen(
-    navigator: MutableList<Any>,
-    viewModel: MainViewModel = viewModel()
-) {
-    //-------------------------------------------//
+fun MainScreen(viewModel: MainViewModel = viewModel()) {
     Scaffold(
         topBar = {
             when (viewModel.currentMainTab) {
@@ -46,7 +41,7 @@ fun MainScreen(
                     "online",
                     null
                 )
-                else -> null
+                else -> {}
             }
         },
         modifier = Modifier.fillMaxSize()
@@ -70,14 +65,12 @@ fun MainScreen(
                         )
                     }
                 }
-
                 CurrentMainTab.FriendManager -> {
                     Column {
                         ToukoSearchBar(
                             onSearch = viewModel::searchPeopleByName,
                             placeholder = stringResource(R.string.search_people_placeholder)
                         )
-
                         if (viewModel.personList.isNotEmpty()) {
                             Text("搜索结果", modifier = Modifier.padding(start = 20.dp))
                             PersonList(
@@ -86,7 +79,6 @@ fun MainScreen(
                             )
                             HorizontalDivider(modifier = Modifier.padding(10.dp))
                         }
-
                         if (viewModel.friendApplyList.isNotEmpty()) {
                             Text("待处理的好友申请", modifier = Modifier.padding(start = 20.dp))
                             PendingApplyList(
@@ -96,9 +88,8 @@ fun MainScreen(
                         }
                     }
                 }
-
                 CurrentMainTab.Settings -> {
-
+                    // TODO: 设置页面
                 }
             }
             ToolBar(

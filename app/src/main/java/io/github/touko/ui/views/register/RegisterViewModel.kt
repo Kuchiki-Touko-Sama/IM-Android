@@ -21,7 +21,6 @@ class RegisterViewModel : ViewModel() {
     fun updateUsername(newValue: String) {
         username = newValue
     }
-
     fun updatePassword(newValue: String) {
         password = newValue
     }

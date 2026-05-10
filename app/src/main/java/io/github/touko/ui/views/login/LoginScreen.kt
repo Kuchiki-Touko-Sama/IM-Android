@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -17,13 +19,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.touko.navigation.NavigatorState
 import io.github.touko.navigation.MainPage
 import io.github.touko.navigation.RegisterPage
 
 
 @Composable
 fun LoginScreen(
-    navigator: MutableList<Any>,
     viewModel: LoginViewModel = viewModel()
 ) {
    Surface {
@@ -60,9 +62,15 @@ fun LoginScreen(
                        onValueChange = viewModel::updateUsername,
                        label = { Text("username") },
                        maxLines = 1,
+                       leadingIcon = {
+                           Icon(
+                               Icons.Default.Person,
+                               contentDescription = null
+                           )
+                       },
                        shape = RoundedCornerShape(
                            20.dp
-                       )
+                       ),
                    )
 
                    Spacer(modifier = Modifier.height(16.dp))
@@ -71,6 +79,13 @@ fun LoginScreen(
                        value = viewModel.password,
                        onValueChange = viewModel::updatePassword,
                        label = { Text("password") },
+                       maxLines = 1,
+                       leadingIcon = {
+                           Icon(
+                               Icons.Default.Lock,
+                               contentDescription = null
+                           )
+                       },
                        visualTransformation = PasswordVisualTransformation(),
                        shape = RoundedCornerShape(
                            20.dp
@@ -81,7 +96,7 @@ fun LoginScreen(
 
                    Row(modifier = Modifier.align(Alignment.End)) {
                        // 跳转到注册页面
-                       IconButton({ navigator.add(RegisterPage) }) {
+                       IconButton({ NavigatorState.navigate(RegisterPage) }) {
                            Icon(
                                imageVector = Icons.Default.PersonAdd,
                                contentDescription = null,
@@ -90,7 +105,7 @@ fun LoginScreen(
                        // 登录
                        IconButton(
                            onClick = {
-                               viewModel.login { navigator.add(MainPage) }
+                               viewModel.login { NavigatorState.navigate(MainPage) }
                            },
                            enabled = !viewModel.isLoading,
                            colors = IconButtonDefaults.iconButtonColors().copy(

@@ -13,8 +13,8 @@ import io.github.touko.data.state.CurrentUserState
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
-    var username by mutableStateOf("qwq")
-    var password by mutableStateOf("111")
+    var username by mutableStateOf("")
+    var password by mutableStateOf("")
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
 
@@ -49,6 +49,8 @@ class LoginViewModel : ViewModel() {
     }
 
     private fun isValidForm(): Boolean {
+        username = username.trim()
+        password = password.trim()
         if (username.isBlank() || password.isBlank()) {
             errorMessage = "用户名或密码不能为空"
             return false

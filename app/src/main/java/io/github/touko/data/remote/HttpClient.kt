@@ -3,7 +3,9 @@ package io.github.touko.data.remote
 import io.github.touko.data.local.TokenManager
 import io.github.touko.data.remote.api.FriendApi
 import io.github.touko.data.remote.api.UserApi
+import io.github.touko.navigation.NavigatorState
 import io.github.touko.event.GlobalEvent
+import io.github.touko.navigation.LoginPage
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -48,7 +50,6 @@ object HttpClient {
 }
 
 class GlobalInterceptor : Interceptor {
-    @OptIn(DelicateCoroutinesApi::class)
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = TokenManager.getToken()
         val request = chain.request()
@@ -67,9 +68,7 @@ class GlobalInterceptor : Interceptor {
             when (response.code) {
                 401 -> {
                     TokenManager.clearToken()
-                    GlobalScope.launch {
-                        GlobalEvent.unauthorized.emit(Unit)
-                    }
+                    NavigatorState.replace(LoginPage)
                 }
                 else -> { /* 抛出自定义网络异常 */ }
             }

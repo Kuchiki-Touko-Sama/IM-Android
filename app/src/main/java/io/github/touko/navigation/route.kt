@@ -1,5 +1,8 @@
 package io.github.touko.navigation
 
-data object LoginPage
-data object RegisterPage
-data object MainPage
+sealed class Page
+data object LoginPage: Page()
+data object RegisterPage: Page()
+data object MainPage: Page()
+
+data class ChatPage(val userId: Int, val userName: String) : Page()

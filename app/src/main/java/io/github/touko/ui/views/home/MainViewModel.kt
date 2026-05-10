@@ -13,7 +13,9 @@ import io.github.touko.data.model.response.TargetUser
 import io.github.touko.data.remote.HttpClient
 import io.github.touko.data.state.CurrentUserState
 import io.github.touko.data.state.FriendState
+import io.github.touko.navigation.NavigatorState
 import io.github.touko.event.GlobalEvent
+import io.github.touko.navigation.LoginPage
 import io.github.touko.ui.views.login.LoginScreen
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
@@ -45,7 +47,7 @@ class MainViewModel : ViewModel() {
             while (isActive) {
                 val uid = CurrentUserState.uid
                 if (uid == 0) {
-                    GlobalEvent.unauthorized.emit(Unit)
+                    NavigatorState.replace(LoginPage)
                     cancel()
                 }
                 val response = HttpClient.friendApi.getFriendship(uid)

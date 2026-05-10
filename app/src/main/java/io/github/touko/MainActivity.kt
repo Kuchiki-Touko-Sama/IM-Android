@@ -13,10 +13,13 @@ import androidx.compose.runtime.remember
 import androidx.navigation3.runtime.NavEntry
 import com.tencent.mmkv.MMKV
 import io.github.touko.data.local.LocalUserManager
+import io.github.touko.navigation.NavigatorState
 import io.github.touko.event.GlobalEvent
+import io.github.touko.navigation.ChatPage
 import io.github.touko.navigation.LoginPage
 import io.github.touko.navigation.MainPage
 import io.github.touko.navigation.RegisterPage
+import io.github.touko.ui.views.chat.ChatScreen
 import io.github.touko.ui.views.home.MainScreen
 import io.github.touko.ui.views.login.LoginScreen
 import io.github.touko.ui.views.register.RegisterScreen
@@ -34,37 +37,30 @@ class MainActivity : ComponentActivity() {
         } else {
             MainPage
         }
-
         setContent {
             Im_android_appTheme {
-                val navigator = remember { mutableStateListOf<Any>(startPage) }
-                // 监听http拦截器触发的401错误
-                LaunchedEffect(Unit) {
-                    GlobalEvent.unauthorized.collect {
-                        navigator.clear()
-                        navigator.add(LoginPage)
-                    }
-                }
+                NavigatorState.navigate(startPage)
                 NavDisplay(
-                    backStack = navigator,
-                    onBack = { navigator.removeLastOrNull() },
+                    backStack = NavigatorState.backStack,
+                    onBack = { NavigatorState.back() },
                 ) { key ->
                     when (key) {
                         is LoginPage -> NavEntry(key) {
-                            LoginScreen(navigator)
+                            LoginScreen()
                         }
                         is RegisterPage -> NavEntry(key) {
-                            RegisterScreen(navigator)
+                            RegisterScreen()
                         }
                         is MainPage -> NavEntry(key) {
-                            MainScreen(navigator)
+                            MainScreen()
                         }
-                        else -> NavEntry(key) { MainScreen(navigator) }
+                        is ChatPage -> NavEntry(key) {
+                            ChatScreen(userId = key.userId, key.userName)
+                        }
                     }
                 }
             }
         }
-
     }
 }
 
