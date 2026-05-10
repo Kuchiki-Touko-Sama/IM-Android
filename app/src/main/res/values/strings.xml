@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">im_android_app</string>
+    <string name="search_message_placeholder">搜索消息</string>
+    <string name="search_people_placeholder">搜索联系人</string>
 </resources>

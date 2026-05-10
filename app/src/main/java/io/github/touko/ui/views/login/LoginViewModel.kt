@@ -12,8 +12,8 @@ import io.github.touko.data.state.CurrentUserState
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
-    var username by mutableStateOf("")
-    var password by mutableStateOf("")
+    var username by mutableStateOf("qwq")
+    var password by mutableStateOf("111")
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
 
@@ -37,7 +37,6 @@ class LoginViewModel : ViewModel() {
             if (response.code == 200 && response.data != null) {
                 TokenManager.saveToken(response.data.token)
                 // 设置当前登录用户状态
-                println(response.data)
                 CurrentUserState.uid = response.data.userId
                 CurrentUserState.username = username
                 onSuccess()

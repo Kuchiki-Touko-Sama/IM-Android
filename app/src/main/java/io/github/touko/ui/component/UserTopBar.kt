@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.dp
 fun UserTopBar(
     userName: String,
     onlineStatus: String,
-    avatarUrl: String? = null // 实际项目中建议传入 URL
+    avatarUrl: String? = null
 ) {
     TopAppBar(
         title = {
@@ -52,19 +52,16 @@ fun UserTopBar(
                             .clip(CircleShape),
                         tint = MaterialTheme.colorScheme.primary
                     )
-
                     // 2. 在线状态圆点
                     Surface(
                         shape = CircleShape,
-                        color = Color.Green, // 在线颜色
+                        color = Color.Green,
                         modifier = Modifier
                             .size(12.dp)
                             .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape)
                     ) {}
                 }
-
                 Spacer(modifier = Modifier.width(12.dp))
-
                 Column {
                     Text(
                         text = userName,
@@ -82,12 +79,6 @@ fun UserTopBar(
         modifier = Modifier.clip(
             RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
         ),
-        actions = {
-            // 右侧可以放搜索或设置图标
-            IconButton(onClick = { /* TODO */ }) {
-                Icon(Icons.Default.Search, contentDescription = "搜索")
-            }
-        },
         // 设置顶栏颜色和高度
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.secondaryContainer)
