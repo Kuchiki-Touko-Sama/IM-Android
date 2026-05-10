@@ -22,6 +22,4 @@ object LocalUserManager {
     fun getUsername(): String? {
         return MMKV.defaultMMKV().decodeString(USERNAME_KEY)
     }
-
-
 }
