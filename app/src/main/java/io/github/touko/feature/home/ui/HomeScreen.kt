@@ -1,4 +1,4 @@
-package io.github.touko.ui.views.home
+package io.github.touko.feature.home.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,12 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.touko.R
 import io.github.touko.data.state.CurrentUserState
-import io.github.touko.ui.component.FriendList
-import io.github.touko.ui.component.PendingApplyList
-import io.github.touko.ui.component.PersonList
-import io.github.touko.ui.component.ToolBar
-import io.github.touko.ui.component.ToukoSearchBar
-import io.github.touko.ui.component.UserTopBar
+import io.github.touko.feature.home.ui.componement.FriendList
+import io.github.touko.feature.home.ui.componement.PendingApplyList
+import io.github.touko.feature.home.ui.componement.PersonList
+import io.github.touko.feature.home.ui.componement.ToolBar
+import io.github.touko.feature.home.ui.componement.ToukoSearchBar
+import io.github.touko.feature.home.ui.componement.UserTopBar
+import io.github.touko.feature.home.HomeViewModel
 
 enum class CurrentMainTab {
     ChatList,
@@ -32,7 +33,7 @@ enum class CurrentMainTab {
 
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun MainScreen(viewModel: MainViewModel = viewModel()) {
+fun MainScreen(viewModel: HomeViewModel = viewModel()) {
     Scaffold(
         topBar = {
             when (viewModel.currentMainTab) {
@@ -56,6 +57,7 @@ fun MainScreen(viewModel: MainViewModel = viewModel()) {
                     Column {
                         ToukoSearchBar(
                             onSearch = {
+                                // TODO: 搜索消息
                             },
                             placeholder = stringResource(R.string.search_message_placeholder)
                         )

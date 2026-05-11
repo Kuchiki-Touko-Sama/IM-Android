@@ -1,4 +1,4 @@
-package io.github.touko.ui.views.home
+package io.github.touko.feature.home
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,18 +13,13 @@ import io.github.touko.data.model.response.TargetUser
 import io.github.touko.data.remote.HttpClient
 import io.github.touko.data.state.CurrentUserState
 import io.github.touko.data.state.FriendState
-import io.github.touko.navigation.NavigatorState
-import io.github.touko.event.GlobalEvent
-import io.github.touko.navigation.LoginPage
-import io.github.touko.ui.views.login.LoginScreen
+import io.github.touko.feature.home.ui.CurrentMainTab
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
 
-class MainViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>("")
     var friendList by mutableStateOf<List<Friendship>>(emptyList())
@@ -55,7 +50,7 @@ class MainViewModel : ViewModel() {
                     for (friendship in response.data)
                         CurrentUserState.friendships[friendship.friendId] = FriendState.FRIEND
                 }
-                val responseOfFriendship = HttpClient.friendApi.getFriendshipApply(uid)
+                val responseOfFriendship = HttpClient.friendApi.getFriendApply(uid)
                 if (responseOfFriendship.code == 200 && responseOfFriendship.data != null) {
                    friendApplyList  = responseOfFriendship.data
                     for (apply in responseOfFriendship.data) {
@@ -93,8 +88,11 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            val response = HttpClient.friendApi.applyFriendship(SendFriendApplyRequest(
-                CurrentUserState.uid, friendId))
+            val response = HttpClient.friendApi.applyFriend(
+                SendFriendApplyRequest(
+                    CurrentUserState.uid, friendId
+                )
+            )
             if (response.code == 200 && response.data != null) {
                 CurrentUserState.friendships[friendId] = FriendState.PENDING
             } else {
@@ -108,7 +106,7 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            val response = HttpClient.friendApi.acceptApply(friendShipId)
+            val response = HttpClient.friendApi.acceptFriendApply(friendShipId)
             if (response.code == 200 && response.data != null) {
                 CurrentUserState.friendships[senderId] = FriendState.FRIEND
                 // TODO: 提示成功添加

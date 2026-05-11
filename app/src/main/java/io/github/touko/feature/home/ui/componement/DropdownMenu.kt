@@ -1,4 +1,4 @@
-package io.github.touko.ui.component
+package io.github.touko.feature.home.ui.componement
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.local.LocalUserManager
-import io.github.touko.navigation.NavigatorState
+import io.github.touko.navigation.NavigatorManager
 import io.github.touko.navigation.LoginPage
 
 @Composable
@@ -48,7 +48,7 @@ fun DropdownMenu( modifier: Modifier = Modifier) {
                 onClick = {
                     expanded = false
                     LocalUserManager.logout()
-                    NavigatorState.replace(LoginPage)
+                    NavigatorManager.replace(LoginPage)
                 }
             )
         }

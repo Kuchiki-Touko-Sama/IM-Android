@@ -1,4 +1,4 @@
-package io.github.touko.ui.component
+package io.github.touko.feature.home.ui.componement
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

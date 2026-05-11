@@ -1,6 +1,5 @@
-package io.github.touko.ui.views.chat
+package io.github.touko.feature.chat
 
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -13,22 +12,21 @@ import io.github.touko.data.remote.ChatWebSocketManager
 import io.github.touko.data.remote.HttpClient
 import io.github.touko.data.state.CurrentUserState
 import kotlinx.coroutines.launch
-import kotlin.collections.emptyList
 
-class ChatViewModel : ViewModel() {
+class ChatViewModel(val friendId: Int) : ViewModel() {
     var messageList = mutableStateListOf<Message>()
-
     var inputMessage by mutableStateOf("")
 
 
     init {
         viewModelScope.launch {
-            ChatWebSocketManager.messageFlow.collect {message ->
-                messageList.add(message)
+            ChatWebSocketManager.messageFlow.collect { message ->
+                onReceiveMessage(message)
             }
         }
     }
-    fun loadHistory(friendId: Int) {
+
+    fun loadHistory() {
         viewModelScope.launch {
             val response = HttpClient.messageApi.history(CurrentUserState.uid, friendId)
             if (response.code == 200 && response.data != null) {
@@ -40,7 +38,7 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun syncMessage(friendId: Int) {
+    fun syncMessage() {
         viewModelScope.launch {
             val lastMessageId =
                 messageList.lastOrNull()?.messageId ?: 0
@@ -54,7 +52,7 @@ class ChatViewModel : ViewModel() {
         }
     }
 
-    fun sendMessage(friendId: Int) {
+    fun sendMessage() {
         if (inputMessage.isBlank())
             return
         inputMessage = inputMessage.trim()
@@ -67,9 +65,10 @@ class ChatViewModel : ViewModel() {
         inputMessage = ""
     }
 
-    fun onReceiveMessage(message: Message, friendId: Int) {
-        if (message.senderId == friendId || message.receiverId == friendId)
-            messageList += message
+    fun onReceiveMessage(message: Message) {
+        if ((message.senderId == CurrentUserState.uid && message.receiverId == friendId)
+            || (message.senderId == friendId && message.receiverId == CurrentUserState.uid))
+            messageList.add(message)
     }
 
     fun updateInput(text: String) {

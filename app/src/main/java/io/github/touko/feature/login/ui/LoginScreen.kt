@@ -1,4 +1,4 @@
-package io.github.touko.ui.views.register
+package io.github.touko.feature.login.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -10,10 +10,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
@@ -31,13 +31,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.touko.navigation.NavigatorState
-import io.github.touko.navigation.LoginPage
+import io.github.touko.feature.login.LoginViewModel
+import io.github.touko.navigation.NavigatorManager
+import io.github.touko.navigation.RegisterPage
+
 
 @Composable
-fun RegisterScreen(
-     viewModel: RegisterViewModel = viewModel()
-) {
+fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
     Surface {
         Column(
             modifier = Modifier
@@ -48,7 +48,7 @@ fun RegisterScreen(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Sign Up",
+                text = "Login",
                 style = MaterialTheme.typography.headlineLarge,
                 fontSize = 70.sp,
                 fontWeight = FontWeight.Bold,
@@ -57,11 +57,13 @@ fun RegisterScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             ElevatedCard(
-                colors = CardDefaults.cardColors().copy(
+                colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                ), elevation = CardDefaults.cardElevation(
+                ),
+                elevation = CardDefaults.cardElevation(
                     defaultElevation = 6.dp
-                ), modifier = Modifier.padding(20.dp)
+                ),
+                modifier = Modifier.padding(20.dp)
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     OutlinedTextField(
@@ -69,15 +71,8 @@ fun RegisterScreen(
                         onValueChange = viewModel::updateUsername,
                         label = { Text("username") },
                         maxLines = 1,
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Person,
-                                contentDescription = null
-                            )
-                        },
-                        shape = RoundedCornerShape(
-                            20.dp
-                        )
+                        leadingIcon = { Icon(Icons.Default.Person, null) },
+                        shape = RoundedCornerShape(20.dp),
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -86,63 +81,28 @@ fun RegisterScreen(
                         value = viewModel.password,
                         onValueChange = viewModel::updatePassword,
                         label = { Text("password") },
-                        visualTransformation = PasswordVisualTransformation(),
                         maxLines = 1,
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Lock,
-                                contentDescription = null
-                            )
-                        },
-                        shape = RoundedCornerShape(
-                            20.dp
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    OutlinedTextField(
-                        value = viewModel.confirmPassword,
-                        onValueChange = viewModel::updateConfirmPassword,
-                        label = { Text("confirm password") },
+                        leadingIcon = { Icon(Icons.Default.Lock, null) },
                         visualTransformation = PasswordVisualTransformation(),
-                        maxLines = 1,
-                        leadingIcon = {
-                            Icon(
-                                Icons.Default.Lock,
-                                contentDescription = null
-                            )
-                        },
-                        shape = RoundedCornerShape(
-                            20.dp
-                        ),
+                        shape = RoundedCornerShape(20.dp)
                     )
 
                     Spacer(modifier = Modifier.height(50.dp))
 
                     Row(modifier = Modifier.align(Alignment.End)) {
-                        // 返回登录页面
-                        IconButton({ NavigatorState.navigate(LoginPage) }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null,
-                            )
+                        IconButton({ NavigatorManager.goTo(RegisterPage) }) {
+                            Icon(Icons.Default.PersonAdd, null)
                         }
-                        // 提交注册表单
+                        // 登录
                         IconButton(
-                            onClick = {
-                                viewModel.register { NavigatorState.navigate(LoginPage) }
-                            },
+                            onClick = viewModel::login,
                             enabled = !viewModel.isLoading,
-                            colors = IconButtonDefaults.iconButtonColors().copy(
+                            colors = IconButtonDefaults.iconButtonColors(
                                 containerColor = MaterialTheme.colorScheme.primaryContainer,
                                 contentColor = MaterialTheme.colorScheme.primary
                             )
                         ) {
-                            Icon(
-                                imageVector = Icons.Filled.Check,
-                                contentDescription = null
-                            )
+                            Icon(Icons.AutoMirrored.Filled.ArrowForward, null)
                         }
                     }
                 }
@@ -150,3 +110,4 @@ fun RegisterScreen(
         }
     }
 }
+

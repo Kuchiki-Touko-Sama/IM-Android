@@ -1,4 +1,4 @@
-package io.github.touko.ui.component
+package io.github.touko.feature.home.ui.componement
 
 
 import androidx.compose.foundation.layout.width
@@ -15,7 +15,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.touko.ui.views.home.CurrentMainTab
+import io.github.touko.feature.home.ui.CurrentMainTab
 
 @Composable
 private fun tabTint(

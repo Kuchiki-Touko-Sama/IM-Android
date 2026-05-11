@@ -1,6 +1,5 @@
-package io.github.touko.ui.component
+package io.github.touko.feature.home.ui.componement
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,8 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.HourglassFull
 import androidx.compose.material.icons.filled.Person2
 import androidx.compose.material.icons.filled.PersonAdd
@@ -25,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.model.response.TargetUser
 import io.github.touko.data.state.CurrentUserState
-import io.github.touko.data.state.FriendState
 import io.github.touko.data.state.FriendState.*
 
 

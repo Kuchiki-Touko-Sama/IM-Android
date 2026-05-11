@@ -2,11 +2,11 @@ package io.github.touko.navigation
 
 import androidx.compose.runtime.mutableStateListOf
 
-object NavigatorState {
+object NavigatorManager {
 
     val backStack = mutableStateListOf<Page>()
 
-    fun navigate(page: Page) {
+    fun goTo(page: Page) {
         backStack.add(page)
     }
 

@@ -43,9 +43,7 @@ object ChatWebSocketManager {
                     webSocket: WebSocket,
                     text: String
                 ) {
-                    Log.d("im-server", text)
                     val message = Json.decodeFromString<Message>(text)
-                    Log.d("im-server", "onMessage: $message")
                     CoroutineScope(Dispatchers.Main).launch {
                         messageFlow.emit(message)
                     }

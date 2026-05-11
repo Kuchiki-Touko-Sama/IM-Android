@@ -1,4 +1,4 @@
-package io.github.touko.ui.component
+package io.github.touko.feature.chat.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,23 +40,13 @@ fun MessageList(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(messageList) { message ->
-            val isMine = message.senderId == CurrentUserState.uid
+            val isMine = (message.senderId == CurrentUserState.uid)
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = if (isMine) {
-                    Arrangement.End
-                } else {
-                    Arrangement.Start
-                }
+                horizontalArrangement = if (isMine) Arrangement.End else Arrangement.Start
             ) {
-                Column(
-                    horizontalAlignment = if (isMine) {
-                        Alignment.End
-                    } else {
-                        Alignment.Start
-                    }
-                ) {
-                    val time = message.createTime.substring(11,16)
+                Column(horizontalAlignment = if (isMine) Alignment.End else Alignment.Start) {
+                    val time = message.createTime.substring(11, 16)
                     val date = message.createTime.substring(0, 10)
                     Text(
                         text = time,
@@ -61,35 +54,35 @@ fun MessageList(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.padding(
                             top = 2.dp,
-                            start = 4.dp,
-                            end = 4.dp
+                            start = 35.dp,
+                            end = 35.dp
                         )
                     )
-                    Box(
-                        modifier = Modifier
-                            .background(
-                                color = if (isMine) {
-                                    MaterialTheme.colorScheme.primary
-                                } else {
-                                    MaterialTheme.colorScheme.surfaceContainerHighest
-                                },
-                                shape = RoundedCornerShape(16.dp)
+                    // 文字 & 头像
+                    Row {
+                        if (!isMine)
+                            Icon(Icons.Default.Person, null)
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    color = if (isMine)
+                                        MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest,
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                                .padding(
+                                    horizontal = 14.dp,
+                                    vertical = 10.dp
+                                )
+                        ) {
+                            Text(
+                                text = message.content,
+                                color = if (isMine)
+                                    MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
                             )
-                            .padding(
-                                horizontal = 14.dp,
-                                vertical = 10.dp
-                            )
-                    ) {
-                        Text(
-                            text = message.content,
-                            color = if (isMine) {
-                                MaterialTheme.colorScheme.onPrimary
-                            } else {
-                                MaterialTheme.colorScheme.onSurface
-                            }
-                        )
+                        }
+                        if (isMine)
+                            Icon(Icons.Default.Person, null)
                     }
-
                 }
             }
         }

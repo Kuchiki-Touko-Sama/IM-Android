@@ -1,4 +1,4 @@
-package io.github.touko.ui.views.chat
+package io.github.touko.feature.chat.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,19 +10,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import io.github.touko.ui.component.ChatInputBar
-import io.github.touko.ui.component.ChatTopBar
-import io.github.touko.ui.component.MessageList
+import io.github.touko.feature.chat.ui.component.ChatInputBar
+import io.github.touko.feature.chat.ui.component.ChatTopBar
+import io.github.touko.feature.chat.ui.component.MessageList
+import io.github.touko.feature.chat.ChatViewModel
 
 @Composable
-fun ChatScreen(userId: Int, userName: String, viewModel: ChatViewModel = viewModel()) {
-    // 初始化组件前全量拉取历史消息
-
-    LaunchedEffect(userId) {
-        viewModel.loadHistory(userId)
+fun ChatScreen(
+    userId: Int, userName: String,
+    viewModel: ChatViewModel = viewModel(key = "chat_$userId") {
+        ChatViewModel(userId)
     }
-    //viewModel.syncMessage(userId)
-
+) {
+    LaunchedEffect(userId) {
+        viewModel.loadHistory()
+    }
     Scaffold(
         topBar = { ChatTopBar(userName, "online") }
     ) { innerPadding ->
@@ -36,10 +38,12 @@ fun ChatScreen(userId: Int, userName: String, viewModel: ChatViewModel = viewMod
             )
             ChatInputBar(
                 onSendClick = {
-                    viewModel.sendMessage(userId)
+                    viewModel.sendMessage()
                 },
                 onInputMessageChange = viewModel::updateInput,
-                modifier = Modifier.padding(10.dp).align(Alignment.BottomCenter),
+                modifier = Modifier
+                    .padding(10.dp)
+                    .align(Alignment.BottomCenter),
                 inputMessage = viewModel.inputMessage
             )
         }

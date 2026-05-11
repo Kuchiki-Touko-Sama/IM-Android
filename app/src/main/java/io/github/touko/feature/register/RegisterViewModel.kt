@@ -1,13 +1,14 @@
-package io.github.touko.ui.views.register
+package io.github.touko.feature.register
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.touko.data.model.request.LoginRequest
 import io.github.touko.data.model.request.RegisterRequest
 import io.github.touko.data.remote.HttpClient
+import io.github.touko.navigation.LoginPage
+import io.github.touko.navigation.NavigatorManager
 import kotlinx.coroutines.launch
 
 class RegisterViewModel : ViewModel() {
@@ -29,7 +30,7 @@ class RegisterViewModel : ViewModel() {
         confirmPassword = newValue
     }
 
-    fun register(onSuccess: () -> Unit) {
+    fun register() {
         if (!isValidForm())
             return
 
@@ -37,11 +38,11 @@ class RegisterViewModel : ViewModel() {
             isLoading = true
             errorMessage = null
             val response = HttpClient.userApi.register(RegisterRequest(username, password))
-            if (response.code == 200) {
-                onSuccess()
-            } else {
+            if (response.code == 200)
+                NavigatorManager.goTo(LoginPage)
+            else
                 errorMessage = response.message
-            }
+
             isLoading = false
         }
     }

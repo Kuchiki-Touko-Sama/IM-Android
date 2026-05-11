@@ -1,4 +1,4 @@
-package io.github.touko.ui.component
+package io.github.touko.feature.home.ui.componement
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,8 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.model.response.Friendship
 import io.github.touko.navigation.ChatPage
-import io.github.touko.navigation.NavigatorState
-import io.github.touko.ui.views.chat.ChatScreen
+import io.github.touko.navigation.NavigatorManager
 
 @Composable
 fun FriendList(friends: List<Friendship>, modifier: Modifier = Modifier) {
@@ -39,7 +38,7 @@ fun FriendList(friends: List<Friendship>, modifier: Modifier = Modifier) {
                 },
                 supportingContent = { Text("test message") },
                 modifier = Modifier.fillMaxWidth().clickable(true) {
-                    NavigatorState.navigate(
+                    NavigatorManager.goTo(
                         ChatPage(friend.friendId, friend.friendName)
                     )
                 }

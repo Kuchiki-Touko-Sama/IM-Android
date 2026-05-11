@@ -1,16 +1,18 @@
-package io.github.touko.ui.views.login
+package io.github.touko.feature.login
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.touko.data.local.TokenManager
 import io.github.touko.data.local.LocalUserManager
+import io.github.touko.data.local.TokenManager
 import io.github.touko.data.model.request.LoginRequest
 import io.github.touko.data.remote.ChatWebSocketManager
 import io.github.touko.data.remote.HttpClient
 import io.github.touko.data.state.CurrentUserState
+import io.github.touko.navigation.MainPage
+import io.github.touko.navigation.NavigatorManager
 import kotlinx.coroutines.launch
 
 class LoginViewModel : ViewModel() {
@@ -23,12 +25,11 @@ class LoginViewModel : ViewModel() {
     fun updateUsername(newValue: String) {
         username = newValue
     }
-
     fun updatePassword(newValue: String) {
         password = newValue
     }
 
-    fun login(onSuccess: () -> Unit) {
+    fun login() {
         if (!isValidForm())
             return
 
@@ -38,13 +39,14 @@ class LoginViewModel : ViewModel() {
             val response = HttpClient.userApi.login(LoginRequest(username, password))
             if (response.code == 200 && response.data != null) {
                 TokenManager.saveToken(response.data.token)
-                // 设置当前登录用户状态
+                // 设置当前登录用户状态缓存
                 CurrentUserState.login(response.data.userId, username)
+                // 登录信息持久化存储
                 LocalUserManager.changeCurrentUser(response.data.userId, username)
                 ChatWebSocketManager.connect(response.data.userId)
                 username = ""
                 password = ""
-                onSuccess()
+                NavigatorManager.goTo(MainPage)
             } else {
                 errorMessage = response.message
             }
