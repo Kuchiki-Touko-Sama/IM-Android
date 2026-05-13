@@ -10,7 +10,7 @@ import io.github.touko.data.local.TokenManager
 import io.github.touko.data.model.request.LoginRequest
 import io.github.touko.data.remote.ChatWebSocketManager
 import io.github.touko.data.remote.HttpClient
-import io.github.touko.data.state.CurrentUserState
+import io.github.touko.feature.home.state.CurrentUserState
 import io.github.touko.navigation.MainPage
 import io.github.touko.navigation.NavigatorManager
 import kotlinx.coroutines.launch

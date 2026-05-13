@@ -22,7 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.model.response.Message
-import io.github.touko.data.state.CurrentUserState
+import io.github.touko.feature.home.state.CurrentUserState
 
 @Composable
 fun MessageList(

@@ -11,8 +11,8 @@ import io.github.touko.data.model.response.Friendship
 import io.github.touko.data.model.response.FriendshipApply
 import io.github.touko.data.model.response.TargetUser
 import io.github.touko.data.remote.HttpClient
-import io.github.touko.data.state.CurrentUserState
-import io.github.touko.data.state.FriendState
+import io.github.touko.feature.home.state.CurrentUserState
+import io.github.touko.feature.home.state.FriendState
 import io.github.touko.feature.home.ui.CurrentMainTab
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay

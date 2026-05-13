@@ -5,8 +5,8 @@ import io.github.touko.data.local.TokenManager
 import io.github.touko.data.remote.api.FriendApi
 import io.github.touko.data.remote.api.MessageApi
 import io.github.touko.data.remote.api.UserApi
-import io.github.touko.navigation.NavigatorManager
 import io.github.touko.navigation.LoginPage
+import io.github.touko.navigation.NavigatorManager
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -78,7 +78,9 @@ class GlobalInterceptor : Interceptor {
                     TokenManager.clearToken()
                     NavigatorManager.replace(LoginPage)
                 }
-                else -> { /* 抛出自定义网络异常 */ }
+
+                else -> { /* 抛出自定义网络异常 */
+                }
             }
         }
         return response

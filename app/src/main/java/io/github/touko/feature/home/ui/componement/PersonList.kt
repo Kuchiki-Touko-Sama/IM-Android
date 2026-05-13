@@ -21,8 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.model.response.TargetUser
-import io.github.touko.data.state.CurrentUserState
-import io.github.touko.data.state.FriendState.*
+import io.github.touko.feature.home.state.CurrentUserState
+import io.github.touko.feature.home.state.FriendState.*
 
 
 @Composable

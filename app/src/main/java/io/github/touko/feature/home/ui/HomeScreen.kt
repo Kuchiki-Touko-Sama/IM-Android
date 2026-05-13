@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.touko.R
-import io.github.touko.data.state.CurrentUserState
+import io.github.touko.feature.home.state.CurrentUserState
 import io.github.touko.feature.home.ui.componement.FriendList
 import io.github.touko.feature.home.ui.componement.PendingApplyList
 import io.github.touko.feature.home.ui.componement.PersonList

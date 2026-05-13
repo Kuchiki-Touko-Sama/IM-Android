@@ -2,8 +2,12 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    id("androidx.room3")
+    id("com.google.devtools.ksp")
 }
-
+room3 {
+    schemaDirectory("$projectDir/schemas")
+}
 android {
     namespace = "io.github.touko"
     compileSdk = 37
@@ -14,13 +18,17 @@ android {
         targetSdk = 37
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        ndk {
+            //noinspection ChromeOsAbiSupport
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -51,6 +59,7 @@ dependencies {
     // nav3
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.sqlite.bundled)
     implementation(libs.androidx.ui)
 
     testImplementation(libs.junit)
@@ -72,4 +81,7 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.mmkv)
+
+    implementation(libs.androidx.room3.runtime)
+    ksp(libs.androidx.room3.compiler)
 }

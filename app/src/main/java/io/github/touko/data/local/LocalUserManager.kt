@@ -1,7 +1,7 @@
 package io.github.touko.data.local
 
 import com.tencent.mmkv.MMKV
-import io.github.touko.data.state.CurrentUserState
+import io.github.touko.feature.home.state.CurrentUserState
 
 object LocalUserManager {
     private const val USERNAME_KEY = "username"

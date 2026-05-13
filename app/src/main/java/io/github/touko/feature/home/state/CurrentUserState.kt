@@ -1,4 +1,4 @@
-package io.github.touko.data.state
+package io.github.touko.feature.home.state
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf

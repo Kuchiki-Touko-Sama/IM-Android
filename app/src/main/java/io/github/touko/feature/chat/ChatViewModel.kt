@@ -1,25 +1,34 @@
 package io.github.touko.feature.chat
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.touko.data.local.mapper.toEntity
+import io.github.touko.data.local.repository.ChatRepository
 import io.github.touko.data.model.request.SendMessageRequest
 import io.github.touko.data.model.response.Message
 import io.github.touko.data.remote.ChatWebSocketManager
-import io.github.touko.data.remote.HttpClient
-import io.github.touko.data.state.CurrentUserState
+import io.github.touko.feature.home.state.CurrentUserState
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ChatViewModel(val friendId: Int) : ViewModel() {
-    var messageList = mutableStateListOf<Message>()
-    var inputMessage by mutableStateOf("")
 
+    var inputMessage by mutableStateOf("")
+    val chatRepository = ChatRepository()
+    var messageList = chatRepository.observeMessages(CurrentUserState.uid, friendId)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = emptyList()
+        )
 
     init {
         viewModelScope.launch {
+            // 接收websocket 回显的消息
             ChatWebSocketManager.messageFlow.collect { message ->
                 onReceiveMessage(message)
             }
@@ -28,27 +37,7 @@ class ChatViewModel(val friendId: Int) : ViewModel() {
 
     fun loadHistory() {
         viewModelScope.launch {
-            val response = HttpClient.messageApi.history(CurrentUserState.uid, friendId)
-            if (response.code == 200 && response.data != null) {
-                messageList.clear()
-                messageList.addAll(response.data.filter {
-                    it.senderId == friendId || it.receiverId == friendId
-                })
-            }
-        }
-    }
-
-    fun syncMessage() {
-        viewModelScope.launch {
-            val lastMessageId =
-                messageList.lastOrNull()?.messageId ?: 0
-            val response = HttpClient.messageApi.sync(CurrentUserState.uid, lastMessageId)
-            if (response.code == 200 && response.data != null) {
-                val newMessage = response.data.filter {
-                    it.senderId == friendId || it.receiverId == friendId
-                }
-                messageList += newMessage
-            }
+            chatRepository.fetchHistoryFromServer(CurrentUserState.uid, friendId)
         }
     }
 
@@ -65,10 +54,11 @@ class ChatViewModel(val friendId: Int) : ViewModel() {
         inputMessage = ""
     }
 
-    fun onReceiveMessage(message: Message) {
+    suspend fun onReceiveMessage(message: Message) {
         if ((message.senderId == CurrentUserState.uid && message.receiverId == friendId)
-            || (message.senderId == friendId && message.receiverId == CurrentUserState.uid))
-            messageList.add(message)
+            || (message.senderId == friendId && message.receiverId == CurrentUserState.uid)
+        )
+            chatRepository.saveMessage(message.toEntity())
     }
 
     fun updateInput(text: String) {
