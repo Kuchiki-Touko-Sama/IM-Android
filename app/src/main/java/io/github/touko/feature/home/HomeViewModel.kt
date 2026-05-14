@@ -116,6 +116,22 @@ class HomeViewModel : ViewModel() {
             isLoading = false
         }
     }
+
+    fun refuseFriendApply(friendshipId: Int, senderId: Int) {
+        viewModelScope.launch {
+            isLoading = true
+            errorMessage = null
+            val response = HttpClient.friendApi.refuseApply(friendshipId)
+            if (response.code == 200 && response.data != null) {
+                CurrentUserState.friendships[senderId] = FriendState.NONE
+            }else {
+                errorMessage = response.message
+            }
+            isLoading = false
+        }
+
+    }
+
     override fun onCleared() {
         super.onCleared()
         syncJob?.cancel()

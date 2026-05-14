@@ -17,21 +17,22 @@ import io.github.touko.feature.chat.ui.component.ChatInputBar
 import io.github.touko.feature.chat.ui.component.ChatTopBar
 import io.github.touko.feature.chat.ui.component.MessageList
 import io.github.touko.feature.chat.ChatViewModel
+import io.github.touko.feature.home.state.CurrentUserState
 
 @Composable
 fun ChatScreen(
-    userId: Int, userName: String,
-    viewModel: ChatViewModel = viewModel(key = "chat_$userId") {
-        ChatViewModel(userId)
+    friendId: Int, friendName: String,
+    viewModel: ChatViewModel = viewModel(key = "chat_${CurrentUserState.uid}_$friendId") {
+        ChatViewModel(friendId)
     }
 ) {
     val messages by viewModel.messageList.collectAsStateWithLifecycle()
     Log.d("im-server", "ChatScreen: $messages")
-    LaunchedEffect(userId) {
+    LaunchedEffect(friendId) {
         viewModel.loadHistory()
     }
     Scaffold(
-        topBar = { ChatTopBar(userName, "online") }
+        topBar = { ChatTopBar(friendName, "online") }
     ) { innerPadding ->
         Box(
             modifier = Modifier

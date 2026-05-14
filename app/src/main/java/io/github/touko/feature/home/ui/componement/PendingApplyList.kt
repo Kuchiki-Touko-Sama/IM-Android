@@ -2,6 +2,7 @@ package io.github.touko.feature.home.ui.componement
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
@@ -24,9 +26,11 @@ import io.github.touko.feature.home.state.FriendState
 
 @Composable
 fun PendingApplyList(
+    modifier: Modifier = Modifier,
     applyList: List<FriendshipApply>,
     onAccept: (Int, Int) -> Unit,
-    modifier: Modifier = Modifier
+    onRefuse: (Int, Int) -> Unit
+
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(0.dp),
@@ -34,36 +38,42 @@ fun PendingApplyList(
         modifier = modifier
     ) {
         items(items = applyList, key = { it.friendApplyId }) { apply ->
-           if (CurrentUserState.friendships[apply.senderId] != FriendState.FRIEND) {
-               ListItem(
-                   headlineContent = { Text(apply.userName) },
-                   leadingContent = {
-                       Icon(
-                           imageVector = Icons.Default.AccountCircle,
-                           contentDescription = null,
-                           modifier = Modifier.size(40.dp)
-                       )
-                   },
-                   trailingContent = {
-                       IconButton(
-                           onClick = {
-                               onAccept(apply.friendApplyId, apply.senderId)
-                           },
-                           colors = IconButtonDefaults.iconButtonColors().copy(
-                               containerColor = MaterialTheme.colorScheme.primaryContainer,
-                               contentColor = MaterialTheme.colorScheme.primary
-                           ),
-                       ) {
-                           Icon(
-                               imageVector = Icons.Default.Check,
+            if (CurrentUserState.friendships[apply.senderId] != FriendState.FRIEND) {
+                ListItem(
+                    headlineContent = { Text(apply.userName) },
+                    leadingContent = {
+                        Icon(
+                            imageVector = Icons.Default.AccountCircle,
+                            contentDescription = null,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    },
+                    trailingContent = {
+                        Row {
+                            IconButton(
+                                onClick = {
+                                    onAccept(apply.friendApplyId, apply.senderId)
+                                },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.primary
+                                ),
+                            ) { Icon(Icons.Default.Check, null) }
 
-                               contentDescription = null
-                           )
-                       }
-                   },
-                   modifier = Modifier.fillMaxWidth()
-               )
-           }
-           }
+                            IconButton(
+                                onClick = {
+                                    onRefuse(apply.friendApplyId, apply.senderId)
+                                },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.primary
+                                )
+                            ) { Icon(Icons.Default.Close, null) }
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
     }
 }

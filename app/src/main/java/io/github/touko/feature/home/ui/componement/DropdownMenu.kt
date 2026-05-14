@@ -17,6 +17,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.local.LocalUserManager
@@ -26,6 +27,7 @@ import io.github.touko.navigation.LoginPage
 @Composable
 fun DropdownMenu( modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Box(
         modifier = modifier
     ) {
@@ -47,7 +49,7 @@ fun DropdownMenu( modifier: Modifier = Modifier) {
                 leadingIcon = { Icon(Icons.AutoMirrored.Filled.Logout, null) },
                 onClick = {
                     expanded = false
-                    LocalUserManager.logout()
+                    LocalUserManager.logout(context)
                     NavigatorManager.replace(LoginPage)
                 }
             )

@@ -85,7 +85,8 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                             Text("待处理的好友申请", modifier = Modifier.padding(start = 20.dp))
                             PendingApplyList(
                                 applyList = viewModel.friendApplyList,
-                                onAccept = viewModel::acceptFriendApply
+                                onAccept = viewModel::acceptFriendApply,
+                                onRefuse = viewModel::refuseFriendApply
                             )
                         }
                     }

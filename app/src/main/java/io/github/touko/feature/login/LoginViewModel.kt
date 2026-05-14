@@ -46,7 +46,7 @@ class LoginViewModel : ViewModel() {
                 ChatWebSocketManager.connect(response.data.userId)
                 username = ""
                 password = ""
-                NavigatorManager.goTo(MainPage)
+                NavigatorManager.replace(MainPage)
             } else {
                 errorMessage = response.message
             }

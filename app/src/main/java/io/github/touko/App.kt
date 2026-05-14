@@ -12,12 +12,15 @@ import java.util.concurrent.Executors
 class App : Application() {
 
     companion object {
+        lateinit var instance: App // 新增
+            private set
         lateinit var db: AppDataBase
             private set
     }
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         val databasePath = applicationContext.getDatabasePath("touko.db")
         db = Room.databaseBuilder<AppDataBase>(databasePath.absolutePath)
             .setDriver(BundledSQLiteDriver())

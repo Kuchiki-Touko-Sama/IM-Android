@@ -24,6 +24,7 @@ object ChatWebSocketManager {
         )
 
     fun connect(userId: Int) {
+        webSocket?.close(1000, "切换当前用户")
         val request = Request.Builder()
             .url("${BASE_WS_URL}/chat?userId=$userId")
             .build()
@@ -35,9 +36,7 @@ object ChatWebSocketManager {
                 override fun onOpen(
                     webSocket: WebSocket,
                     response: Response
-                ) {
-                    println("链接成功")
-                }
+                ) {}
 
                 override fun onMessage(
                     webSocket: WebSocket,
@@ -67,6 +66,10 @@ object ChatWebSocketManager {
         )
     }
 
+    fun disconnect() {
+        webSocket?.close(1000, "Logout")
+        webSocket = null
+    }
     fun send(message: SendMessageRequest) {
         Log.d("my-im", "send: $message")
         val text =
