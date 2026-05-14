@@ -43,6 +43,7 @@ fun DropdownMenu( modifier: Modifier = Modifier) {
                 x = (-8).dp,
                 y = 20.dp
             )
+
         ) {
             DropdownMenuItem(
                 text = { Text("退出") },

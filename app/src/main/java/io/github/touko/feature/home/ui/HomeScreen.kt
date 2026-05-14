@@ -19,6 +19,7 @@ import io.github.touko.feature.home.state.CurrentUserState
 import io.github.touko.feature.home.ui.componement.FriendList
 import io.github.touko.feature.home.ui.componement.PendingApplyList
 import io.github.touko.feature.home.ui.componement.PersonList
+import io.github.touko.feature.home.ui.componement.Setting
 import io.github.touko.feature.home.ui.componement.ToolBar
 import io.github.touko.feature.home.ui.componement.ToukoSearchBar
 import io.github.touko.feature.home.ui.componement.UserTopBar
@@ -92,7 +93,7 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                     }
                 }
                 CurrentMainTab.Settings -> {
-                    // TODO: 设置页面
+                    Setting(onNavigateToAbout = { /* TODO: Navigate to about page */ })
                 }
             }
             ToolBar(
