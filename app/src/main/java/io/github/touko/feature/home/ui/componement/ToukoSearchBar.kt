@@ -32,11 +32,9 @@ fun ToukoSearchBar(
     modifier: Modifier = Modifier,
     placeholder: String = "Search"
 ) {
-
     var query by remember {
         mutableStateOf("")
     }
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier

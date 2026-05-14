@@ -36,6 +36,7 @@ import io.github.touko.data.remote.ChatWebSocketManager
 import io.github.touko.feature.chat.ui.ChatScreen
 import io.github.touko.feature.home.ui.MainScreen
 import io.github.touko.feature.login.ui.LoginScreen
+import io.github.touko.feature.profile.ui.ProfileScreen
 import io.github.touko.feature.register.ui.RegisterScreen
 import io.github.touko.navigation.ChatPage
 import io.github.touko.navigation.LoginPage
@@ -128,6 +129,7 @@ class MainActivity : ComponentActivity() {
                                     key.userName
                                 )
                             }
+                            is io.github.touko.navigation.ProfilePage -> NavEntry(key) { ProfileScreen() }
                         }
                     }
                 }

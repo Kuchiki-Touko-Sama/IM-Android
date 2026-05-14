@@ -24,6 +24,11 @@ import io.github.touko.feature.home.ui.componement.ToolBar
 import io.github.touko.feature.home.ui.componement.ToukoSearchBar
 import io.github.touko.feature.home.ui.componement.UserTopBar
 import io.github.touko.feature.home.HomeViewModel
+import io.github.touko.navigation.ChatPage
+import io.github.touko.navigation.MainPage
+import io.github.touko.navigation.NavigatorManager
+import io.github.touko.navigation.ProfilePage
+import io.github.touko.feature.profile.ui.ProfileScreen
 
 enum class CurrentMainTab {
     ChatList,
@@ -93,7 +98,7 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                     }
                 }
                 CurrentMainTab.Settings -> {
-                    Setting(onNavigateToAbout = { /* TODO: Navigate to about page */ })
+                    Setting(onNavigateToProfile = { NavigatorManager.goTo(ProfilePage) })
                 }
             }
             ToolBar(

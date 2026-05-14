@@ -16,22 +16,10 @@ import kotlinx.coroutines.launch
 object LocalUserManager {
     private const val USERNAME_KEY = "username"
     private const val UID_KEY = "uid"
-    private const val AVATAR_KEY = "avatar_url"
 
-    fun changeCurrentUser(uid: Int, username: String, avatarUrl: String? = null) {
+    fun changeCurrentUser(uid: Int, username: String) {
         MMKV.defaultMMKV().encode(USERNAME_KEY, username)
         MMKV.defaultMMKV().encode(UID_KEY, uid)
-        if (avatarUrl != null) {
-            MMKV.defaultMMKV().encode(AVATAR_KEY, avatarUrl)
-        }
-    }
-
-    fun getAvatarUrl(): String? {
-        return MMKV.defaultMMKV().decodeString(AVATAR_KEY)
-    }
-
-    fun clearAvatar() {
-        MMKV.defaultMMKV().remove(AVATAR_KEY)
     }
     @OptIn(DelicateCoroutinesApi::class)
     fun logout(context: Context) {
