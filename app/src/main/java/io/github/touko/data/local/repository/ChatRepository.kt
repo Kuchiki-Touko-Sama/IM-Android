@@ -1,7 +1,6 @@
 package io.github.touko.data.local.repository
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
 import io.github.touko.App
 import io.github.touko.data.local.entity.MessageEntity
 import io.github.touko.data.local.entity.toMessage
@@ -10,16 +9,11 @@ import io.github.touko.data.model.response.Message
 import io.github.touko.data.remote.HttpClient.messageApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 
 class ChatRepository {
     private val messageDao by lazy { App.db.messageDao() }
-    fun observeMessages(
-        uid: Int,
-        friendId: Int
-    ): Flow<List<Message>> {
+    fun observeMessages(uid: Int, friendId: Int): Flow<List<Message>> {
         return messageDao
             .observeMessageByFriendId(uid, friendId)
             .map { entities ->
@@ -45,13 +39,11 @@ class ChatRepository {
         }
     }
 
-    suspend fun saveMessage(
-        entity: MessageEntity
-    ) {
-      try {
-          messageDao.insert(entity)
-      } catch (e: Exception) {
-          Log.d("im-server", "saveMessage: ${e.message}")
-      }
+    suspend fun saveMessage(entity: MessageEntity) {
+        try {
+            messageDao.insert(entity)
+        } catch (e: Exception) {
+            Log.d("im-server", "saveMessage: ${e.message}")
+        }
     }
 }

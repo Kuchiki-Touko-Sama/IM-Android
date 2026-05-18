@@ -11,24 +11,40 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.model.response.Friendship
+import io.github.touko.data.model.response.LastMessage
 import io.github.touko.navigation.ChatPage
 import io.github.touko.navigation.NavigatorManager
 
 @Composable
-fun FriendList(friends: List<Friendship>, modifier: Modifier = Modifier) {
+fun FriendList(
+    friends: List<Friendship>,
+    lastMessages: Map<Int, LastMessage> = emptyMap(),
+    modifier: Modifier = Modifier
+) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(0.dp),
         contentPadding = PaddingValues(bottom = 100.dp),
         modifier = modifier
     ) {
         items(items = friends, key = {it.friendshipId}) { friend ->
+            val lastMessage = lastMessages[friend.friendId]
+            val messageContent = lastMessage?.content ?: "暂无消息"
+
             ListItem(
-                headlineContent = { Text(friend.friendName) },
+                headlineContent = {
+                    Text(
+                        friend.friendName,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
                 leadingContent = {
                     Icon(
                         imageVector = Icons.Default.AccountCircle,
@@ -36,12 +52,24 @@ fun FriendList(friends: List<Friendship>, modifier: Modifier = Modifier) {
                         modifier = Modifier.size(40.dp)
                     )
                 },
-                supportingContent = { Text("test message") },
-                modifier = Modifier.fillMaxWidth().clickable(true) {
-                    NavigatorManager.goTo(
-                        ChatPage(friend.friendId, friend.friendName)
+                supportingContent = {
+                    Text(
+                        messageContent,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                        color = if (messageContent == "暂无消息")
+                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                        else
+                            MaterialTheme.colorScheme.onSurface
                     )
-                }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(true) {
+                        NavigatorManager.goTo(
+                            ChatPage(friend.friendId, friend.friendName)
+                        )
+                    }
             )
         }
     }

@@ -21,6 +21,7 @@ object LocalUserManager {
         MMKV.defaultMMKV().encode(USERNAME_KEY, username)
         MMKV.defaultMMKV().encode(UID_KEY, uid)
     }
+
     @OptIn(DelicateCoroutinesApi::class)
     fun logout(context: Context) {
         //1. 清理持久化状态
@@ -42,7 +43,7 @@ object LocalUserManager {
     fun getUid(): Int {
         return MMKV.defaultMMKV().decodeInt(UID_KEY)
     }
-    fun getUsername(): String? {
-        return MMKV.defaultMMKV().decodeString(USERNAME_KEY)
+    fun getUsername(): String {
+        return MMKV.defaultMMKV().decodeString(USERNAME_KEY, "") as String
     }
 }

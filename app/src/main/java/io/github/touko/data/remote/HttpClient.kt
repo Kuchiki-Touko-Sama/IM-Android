@@ -1,6 +1,10 @@
 package io.github.touko.data.remote
 
-import android.util.Log
+import android.annotation.SuppressLint
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import io.github.touko.App
 import io.github.touko.data.local.TokenManager
 import io.github.touko.data.remote.api.FriendApi
 import io.github.touko.data.remote.api.MessageApi
@@ -15,6 +19,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import java.io.IOException
 
 object HttpClient {
     private const val BASE_URL = "http://192.168.31.224:8080/api/"
@@ -26,7 +31,7 @@ object HttpClient {
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
-        .addInterceptor(GlobalInterceptor())
+        .addInterceptor(GlobalInterceptor(App.instance))
         .build()
 
     val userApi: UserApi by lazy {
@@ -45,7 +50,6 @@ object HttpClient {
             .build()
             .create(FriendApi::class.java)
     }
-
     val messageApi: MessageApi by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -56,8 +60,12 @@ object HttpClient {
     }
 }
 
-class GlobalInterceptor : Interceptor {
+class GlobalInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
+        if (!isNetworkConnected(context)) {
+            // 直接抛出异常，请求不会发出去
+            throw NoNetworkException()
+        }
         val token = TokenManager.getToken()
         val request = chain.request()
             .newBuilder()
@@ -70,19 +78,32 @@ class GlobalInterceptor : Interceptor {
                 }
             }
             .build()
-        Log.d("im-http", "intercept: $request")
-        val response = chain.proceed(request)
+
+        val response = try {
+            chain.proceed(request)
+        } catch (e: Exception) {
+            throw e
+        }
+
         if (!response.isSuccessful) {
             when (response.code) {
                 401 -> {
                     TokenManager.clearToken()
                     NavigatorManager.replace(LoginPage)
                 }
-
-                else -> { /* 抛出自定义网络异常 */
-                }
             }
         }
         return response
     }
+
+    @SuppressLint("ServiceCast")
+    private fun isNetworkConnected(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = cm.activeNetwork ?: return false
+        val capabilities = cm.getNetworkCapabilities(activeNetwork) ?: return false
+        return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+    }
 }
+
+
+class NoNetworkException(message: String = "当前无网络连接") : IOException(message)

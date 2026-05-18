@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.touko.App
 import io.github.touko.data.local.LocalUserManager
 import io.github.touko.data.model.request.SendFriendApplyRequest
 import io.github.touko.data.model.response.Friendship
 import io.github.touko.data.model.response.FriendshipApply
+import io.github.touko.data.model.response.LastMessage
 import io.github.touko.data.model.response.TargetUser
 import io.github.touko.data.remote.HttpClient
 import io.github.touko.feature.home.state.CurrentUserState
@@ -16,6 +18,9 @@ import io.github.touko.feature.home.state.FriendState
 import io.github.touko.feature.home.ui.CurrentMainTab
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
@@ -27,14 +32,20 @@ class HomeViewModel : ViewModel() {
     var friendApplyList by mutableStateOf<List<FriendshipApply>>(emptyList())
     var currentMainTab by mutableStateOf(CurrentMainTab.ChatList)
 
+    private val _lastMessages = MutableStateFlow<Map<Int, LastMessage>>(emptyMap())
+    val lastMessages: StateFlow<Map<Int, LastMessage>> = _lastMessages.asStateFlow()
+
     private var syncJob: Job? = null
+    private var messagesJob: Job? = null
+    private val messageDao by lazy { App.db.messageDao() }
 
     init {
-        CurrentUserState.uid = LocalUserManager.getUid()
-        CurrentUserState.username = LocalUserManager.getUsername().toString()
+        CurrentUserState.login(LocalUserManager.getUid(), LocalUserManager.getUsername())
         startSync()
+        observeLastMessages()
     }
 
+    // 轮询同步好友列表和好友申请
     private fun startSync() {
         syncJob?.cancel()
         syncJob = viewModelScope.launch {
@@ -58,6 +69,33 @@ class HomeViewModel : ViewModel() {
                     }
                 }
                 delay(1000)
+            }
+        }
+    }
+
+    // 获取每个好友的最新消息
+    private fun observeLastMessages() {
+        messagesJob?.cancel()
+        messagesJob = viewModelScope.launch {
+            while (isActive) {
+                val uid = CurrentUserState.uid
+                if (uid == 0 || friendList.isEmpty()) {
+                    _lastMessages.value = emptyMap()
+                    delay(1000)
+                    continue
+                }
+                val friendIds = friendList.map { it.friendId }
+                val messagesFlow = messageDao.getLastMessagesForFriends(uid, friendIds)
+                messagesFlow.collect { messages ->
+                    val lastMessages = messages.map { message ->
+                        LastMessage(
+                            friendId = message.friendId,
+                            content = message.content,
+                            lastMessageTime = message.lastMessageTime
+                        )
+                    }
+                    _lastMessages.value = lastMessages.associateBy { it.friendId }
+                }
             }
         }
     }
@@ -90,7 +128,8 @@ class HomeViewModel : ViewModel() {
             errorMessage = null
             val response = HttpClient.friendApi.applyFriend(
                 SendFriendApplyRequest(
-                    CurrentUserState.uid, friendId
+                    CurrentUserState.uid,
+                    friendId
                 )
             )
             if (response.code == 200 && response.data != null) {
@@ -135,5 +174,6 @@ class HomeViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         syncJob?.cancel()
+        messagesJob?.cancel()
     }
 }

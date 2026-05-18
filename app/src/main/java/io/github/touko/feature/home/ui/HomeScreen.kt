@@ -9,12 +9,14 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.touko.R
+import io.github.touko.feature.home.HomeViewModel
 import io.github.touko.feature.home.state.CurrentUserState
 import io.github.touko.feature.home.ui.componement.FriendList
 import io.github.touko.feature.home.ui.componement.PendingApplyList
@@ -23,12 +25,8 @@ import io.github.touko.feature.home.ui.componement.Setting
 import io.github.touko.feature.home.ui.componement.ToolBar
 import io.github.touko.feature.home.ui.componement.ToukoSearchBar
 import io.github.touko.feature.home.ui.componement.UserTopBar
-import io.github.touko.feature.home.HomeViewModel
-import io.github.touko.navigation.ChatPage
-import io.github.touko.navigation.MainPage
 import io.github.touko.navigation.NavigatorManager
 import io.github.touko.navigation.ProfilePage
-import io.github.touko.feature.profile.ui.ProfileScreen
 
 enum class CurrentMainTab {
     ChatList,
@@ -69,6 +67,7 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                         )
                         FriendList(
                             friends = viewModel.friendList,
+                            lastMessages = viewModel.lastMessages.collectAsState().value,
                             modifier = Modifier.fillMaxSize()
                         )
                     }

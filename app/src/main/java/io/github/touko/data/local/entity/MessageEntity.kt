@@ -30,3 +30,11 @@ fun MessageEntity.toMessage(): Message {
         createTime = this.createTime
     )
 }
+
+fun MessageEntity.toLastMessageEntity(friendId: Int): LastMessageEntity {
+    return LastMessageEntity(
+        friendId = friendId,
+        content = content,
+        lastMessageTime = createTime
+    )
+}
