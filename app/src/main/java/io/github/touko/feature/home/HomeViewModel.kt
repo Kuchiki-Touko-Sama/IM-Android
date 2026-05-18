@@ -1,5 +1,6 @@
 package io.github.touko.feature.home
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -16,36 +17,68 @@ import io.github.touko.data.remote.HttpClient
 import io.github.touko.feature.home.state.CurrentUserState
 import io.github.touko.feature.home.state.FriendState
 import io.github.touko.feature.home.ui.CurrentMainTab
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>("")
+
+    // 使用 snapshotFlow 配合后面的 flatMapLatest，让数据变动成为驱动源
+    private val _friendListFlow = MutableStateFlow<List<Friendship>>(emptyList())
     var friendList by mutableStateOf<List<Friendship>>(emptyList())
+        private set // 限制只能在 ViewModel 内部修改
+
     var personList by mutableStateOf<List<TargetUser>>(emptyList())
     var friendApplyList by mutableStateOf<List<FriendshipApply>>(emptyList())
     var currentMainTab by mutableStateOf(CurrentMainTab.ChatList)
 
-    private val _lastMessages = MutableStateFlow<Map<Int, LastMessage>>(emptyMap())
-    val lastMessages: StateFlow<Map<Int, LastMessage>> = _lastMessages.asStateFlow()
-
-    private var syncJob: Job? = null
-    private var messagesJob: Job? = null
     private val messageDao by lazy { App.db.messageDao() }
+    private var syncJob: Job? = null
 
     init {
         CurrentUserState.login(LocalUserManager.getUid(), LocalUserManager.getUsername())
         startSync()
-        observeLastMessages()
     }
 
-    // 轮询同步好友列表和好友申请
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val lastMessages: StateFlow<Map<Int, LastMessage>> = _friendListFlow
+        .flatMapLatest { friends ->
+            val uid = CurrentUserState.uid
+            if (uid == 0 || friends.isEmpty()) {
+                flowOf(emptyList()) // 条件不满足时返回空数据
+            } else {
+                val friendIds = friends.map { it.friendId }
+                // 监听 Room，数据库一变这边自动发射新数据
+                messageDao.getLastMessagesForFriends(uid, friendIds)
+            }
+        }
+        .map { entities ->
+            // 把 Room 实体类映射为 UI 需要的 Model 结构
+            entities.associate { entity ->
+                entity.friendId to LastMessage(
+                    friendId = entity.friendId,
+                    content = entity.content,
+                    lastMessageTime = entity.lastMessageTime
+                )
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000), // 界面可见时才激活监听
+            initialValue = emptyMap()
+        )
+
     private fun startSync() {
         syncJob?.cancel()
         syncJob = viewModelScope.launch {
@@ -55,51 +88,32 @@ class HomeViewModel : ViewModel() {
                     delay(1000)
                     continue
                 }
-                val response = HttpClient.friendApi.getFriendship(uid)
-                if (response.code == 200 && response.data != null) {
-                    friendList = response.data
-                    for (friendship in response.data)
-                        CurrentUserState.friendships[friendship.friendId] = FriendState.FRIEND
-                }
-                val responseOfFriendship = HttpClient.friendApi.getFriendApply(uid)
-                if (responseOfFriendship.code == 200 && responseOfFriendship.data != null) {
-                   friendApplyList  = responseOfFriendship.data
-                    for (apply in responseOfFriendship.data) {
-                        CurrentUserState.friendships[apply.senderId] = FriendState.PENDING
+                try {
+                    // 1. 同步好友列表
+                    val response = HttpClient.friendApi.getFriendship(uid)
+                    if (response.code == 200 && response.data != null) {
+                        val newData = response.data
+                        friendList = newData
+                        _friendListFlow.value = newData // 触发 lastMessages 链条更新
+                        for (friendship in newData)
+                            CurrentUserState.friendships[friendship.friendId] = FriendState.FRIEND
                     }
+
+                    // 2. 同步好友申请
+                    val responseOfFriendship = HttpClient.friendApi.getFriendApply(uid)
+                    if (responseOfFriendship.code == 200 && responseOfFriendship.data != null) {
+                        friendApplyList = responseOfFriendship.data
+                        for (apply in responseOfFriendship.data) {
+                            CurrentUserState.friendships[apply.senderId] = FriendState.PENDING
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("HomeViewModel", "轮询请求失败，等待下次重试", e)
                 }
-                delay(1000)
+                delay(1000) // 1秒轮询一次
             }
         }
     }
-
-    // 获取每个好友的最新消息
-    private fun observeLastMessages() {
-        messagesJob?.cancel()
-        messagesJob = viewModelScope.launch {
-            while (isActive) {
-                val uid = CurrentUserState.uid
-                if (uid == 0 || friendList.isEmpty()) {
-                    _lastMessages.value = emptyMap()
-                    delay(1000)
-                    continue
-                }
-                val friendIds = friendList.map { it.friendId }
-                val messagesFlow = messageDao.getLastMessagesForFriends(uid, friendIds)
-                messagesFlow.collect { messages ->
-                    val lastMessages = messages.map { message ->
-                        LastMessage(
-                            friendId = message.friendId,
-                            content = message.content,
-                            lastMessageTime = message.lastMessageTime
-                        )
-                    }
-                    _lastMessages.value = lastMessages.associateBy { it.friendId }
-                }
-            }
-        }
-    }
-
     fun searchPeopleByName(username: String) {
         if (username.isEmpty()) {
             personList = emptyList()
@@ -174,6 +188,5 @@ class HomeViewModel : ViewModel() {
     override fun onCleared() {
         super.onCleared()
         syncJob?.cancel()
-        messagesJob?.cancel()
     }
 }
