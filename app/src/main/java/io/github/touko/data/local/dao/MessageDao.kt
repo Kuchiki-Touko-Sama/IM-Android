@@ -15,13 +15,10 @@ interface MessageDao {
 
     @Insert(onConflict = REPLACE)
     suspend fun insert(message: MessageEntity)
-
     @Insert
     suspend fun insertAll(vararg messages: MessageEntity)
-
     @Delete
     suspend fun delete(message: MessageEntity)
-
     @Delete
     suspend fun deleteAll(vararg message: MessageEntity)
 
@@ -43,26 +40,28 @@ interface MessageDao {
 
     @Query(
         """
-        SELECT
-            CASE
-                WHEN senderId = :uid THEN receiverId
-                ELSE senderId
-            END as friendId,
-            content,
-            MAX(createTime) as lastMessageTime
-        FROM message
-        WHERE (senderId = :uid AND receiverId IN (:friendIds))
-           OR (senderId IN (:friendIds) AND receiverId = :uid)
-        GROUP BY
-            CASE
-                WHEN senderId = :uid THEN receiverId
-                ELSE senderId
-            END
-    """
+        WITH RankedMessages AS (
+            SELECT 
+                CASE 
+                    WHEN senderId = :uid THEN receiverId 
+                    ELSE senderId 
+                END AS friendId,
+                content,
+                createTime,
+                ROW_NUMBER() OVER (
+                    PARTITION BY CASE WHEN senderId = :uid THEN receiverId ELSE senderId END 
+                    ORDER BY createTime DESC
+                ) as rn
+            FROM message
+            WHERE senderId = :uid OR receiverId = :uid  
+        )
+        SELECT friendId, content, createTime as lastMessageTime
+        FROM RankedMessages
+        WHERE rn = 1
+        """
     )
-    fun getLastMessagesForFriends(
-        uid: Int,
-        friendIds: List<Int>
+    fun getLastMessages(
+        uid: Int
     ): Flow<List<LastMessageEntity>>
 
 }

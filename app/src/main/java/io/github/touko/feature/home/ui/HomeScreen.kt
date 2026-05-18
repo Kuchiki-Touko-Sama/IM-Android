@@ -20,6 +20,7 @@ import io.github.touko.R
 import io.github.touko.feature.home.HomeViewModel
 import io.github.touko.feature.home.state.CurrentUserState
 import io.github.touko.feature.home.ui.componement.FriendList
+import io.github.touko.feature.home.ui.componement.FriendListState
 import io.github.touko.feature.home.ui.componement.PendingApplyList
 import io.github.touko.feature.home.ui.componement.PersonList
 import io.github.touko.feature.home.ui.componement.Setting
@@ -68,8 +69,10 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                             placeholder = stringResource(R.string.search_message_placeholder)
                         )
                         FriendList(
-                            friends = viewModel.friendList,
-                            lastMessages = lastMessages,
+                            uiState = FriendListState(
+                                friends = viewModel.friendList,
+                                lastMessages = lastMessages.toMap()
+                            ),
                             modifier = Modifier.fillMaxSize()
                         )
                     }

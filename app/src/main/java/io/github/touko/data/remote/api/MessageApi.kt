@@ -10,5 +10,5 @@ interface MessageApi {
     suspend fun sync(@Query("userId") userId: Int, @Query("lastMessageId") lastMessageId: Int) : GetMessageResponse
 
     @GET("message/history")
-    suspend fun history(@Query("userId") userId: Int, @Query("friendId") friendId: Int): GetMessageResponse
+    suspend fun history(@Query("userId") userId: Int): GetMessageResponse
 }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.touko.App
 import io.github.touko.data.local.LocalUserManager
+import io.github.touko.data.local.repository.MessageRepository
 import io.github.touko.data.model.request.SendFriendApplyRequest
 import io.github.touko.data.model.response.Friendship
 import io.github.touko.data.model.response.FriendshipApply
@@ -31,10 +32,11 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
+    private val messageRepository = MessageRepository()
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>("")
 
-
+    private val _currentUidFlow = MutableStateFlow(LocalUserManager.getUid())
     private val _friendListFlow = MutableStateFlow<List<Friendship>>(emptyList())
     var friendList by mutableStateOf<List<Friendship>>(emptyList())
         private set
@@ -47,22 +49,21 @@ class HomeViewModel : ViewModel() {
     private var syncJob: Job? = null
 
     init {
-        CurrentUserState.login(LocalUserManager.getUid(), LocalUserManager.getUsername())
+        val localUID = LocalUserManager.getUid()
+        CurrentUserState.login(localUID, LocalUserManager.getUsername())
+        _currentUidFlow.value = localUID
         startSync()
+        loadHistoryMessage()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val lastMessages: StateFlow<Map<Int, LastMessage>> = _friendListFlow
+    val lastMessages: StateFlow<Map<Int, LastMessage>> = _currentUidFlow
         // 根据friendList变化进行最新消息同步
-        .flatMapLatest { friends ->
-            val uid = CurrentUserState.uid
-            if (uid == 0 || friends.isEmpty()) {
+        .flatMapLatest { uid ->
+            if (uid == 0) {
                 flowOf(emptyList())
             } else {
-                val friendIds = friends.map { it.friendId }
-                Log.d("lastMsg", friendIds.toString())
-                // 监听 Room，数据库一变这边自动发射新数据
-                messageDao.getLastMessagesForFriends(uid, friendIds)
+                messageDao.getLastMessages(uid)
             }
         }
         .map { entities ->
@@ -186,7 +187,11 @@ class HomeViewModel : ViewModel() {
         }
 
     }
-
+    fun loadHistoryMessage() {
+        viewModelScope.launch {
+            messageRepository.fetchHistoryFromServer(CurrentUserState.uid)
+        }
+    }
     override fun onCleared() {
         super.onCleared()
         syncJob?.cancel()

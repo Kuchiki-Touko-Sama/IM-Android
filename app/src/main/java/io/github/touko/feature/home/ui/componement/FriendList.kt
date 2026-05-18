@@ -14,6 +14,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -22,21 +23,27 @@ import io.github.touko.data.model.response.LastMessage
 import io.github.touko.navigation.ChatPage
 import io.github.touko.navigation.NavigatorManager
 
+
+// 1. 定义一个稳定的 UI 状态包装类
+@Immutable
+data class FriendListState(
+    val friends: List<Friendship> = emptyList(),
+    val lastMessages: Map<Int, LastMessage> = emptyMap()
+)
+
 @Composable
 fun FriendList(
     modifier: Modifier = Modifier,
-    friends: List<Friendship>,
-    lastMessages: Map<Int, LastMessage> = emptyMap(),
+    uiState: FriendListState
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(0.dp),
         contentPadding = PaddingValues(bottom = 100.dp),
         modifier = modifier
     ) {
-        items(items = friends, key = {it.friendshipId}) { friend ->
-            val lastMessage = lastMessages[friend.friendId]
+        items(items = uiState.friends, key = { it.friendshipId }) { friend ->
+            val lastMessage = uiState.lastMessages[friend.friendId]
             val messageContent = lastMessage?.content ?: "暂无消息"
-
             ListItem(
                 headlineContent = {
                     Text(

@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.touko.data.local.mapper.toEntity
-import io.github.touko.data.local.repository.ChatRepository
+import io.github.touko.data.local.repository.MessageRepository
 import io.github.touko.data.model.request.SendMessageRequest
 import io.github.touko.data.model.response.Message
 import io.github.touko.data.remote.ChatWebSocketManager
@@ -18,8 +18,8 @@ import kotlinx.coroutines.launch
 class ChatViewModel(val friendId: Int) : ViewModel() {
 
     var inputMessage by mutableStateOf("")
-    val chatRepository = ChatRepository()
-    var messageList = chatRepository.observeMessages(CurrentUserState.uid, friendId)
+    val messageRepository = MessageRepository()
+    var messageList = messageRepository.observeMessages(CurrentUserState.uid, friendId)
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -35,11 +35,7 @@ class ChatViewModel(val friendId: Int) : ViewModel() {
         }
     }
 
-    fun loadHistory() {
-        viewModelScope.launch {
-            chatRepository.fetchHistoryFromServer(CurrentUserState.uid, friendId)
-        }
-    }
+
 
     fun sendMessage() {
         if (inputMessage.isBlank())
@@ -58,7 +54,7 @@ class ChatViewModel(val friendId: Int) : ViewModel() {
         if ((message.senderId == CurrentUserState.uid && message.receiverId == friendId)
             || (message.senderId == friendId && message.receiverId == CurrentUserState.uid)
         )
-            chatRepository.saveMessage(message.toEntity())
+            messageRepository.saveMessage(message.toEntity())
     }
 
     fun updateInput(text: String) {

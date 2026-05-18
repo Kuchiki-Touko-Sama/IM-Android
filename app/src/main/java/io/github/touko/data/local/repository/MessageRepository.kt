@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
-class ChatRepository {
+class MessageRepository {
     private val messageDao by lazy { App.db.messageDao() }
     fun observeMessages(uid: Int, friendId: Int): Flow<List<Message>> {
         return messageDao
@@ -25,14 +25,13 @@ class ChatRepository {
             }
     }
 
-    suspend fun fetchHistoryFromServer(myId: Int, friendId: Int) {
+    suspend fun fetchHistoryFromServer(myId: Int) {
         try {
-            val response = messageApi.history(myId, friendId)
+            val response = messageApi.history(myId)
             if (response.code == 200 && response.data != null) {
-                //写入数据库，Flow 会自动感应并刷新 UI
-                for (message in response.data) {
+                //写入数据库，Flow 自动感应并刷新 UI
+                for (message in response.data)
                     messageDao.insert(message.toEntity())
-                }
             }
         } catch (e: Exception) {
             Log.d("im-server", "fetchHistoryFromServer: ${e.message}")
