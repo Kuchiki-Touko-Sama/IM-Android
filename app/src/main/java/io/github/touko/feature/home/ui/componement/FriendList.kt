@@ -49,7 +49,8 @@ fun FriendList(
                     Text(
                         friend.friendName,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.titleMedium
                     )
                 },
                 leadingContent = {
@@ -64,11 +65,8 @@ fun FriendList(
                         messageContent,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        color = if (messageContent == "暂无消息")
-                            MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-                        else
-                            MaterialTheme.colorScheme.onSurface
-                    )
+
+                        )
                 },
                 modifier = Modifier
                     .fillMaxWidth()

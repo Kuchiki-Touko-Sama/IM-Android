@@ -35,8 +35,6 @@ enum class CurrentMainTab {
     FriendManager,
     Settings
 }
-
-
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainScreen(viewModel: HomeViewModel = viewModel()) {

@@ -47,7 +47,6 @@ fun MessageList(
             ) {
                 Column(horizontalAlignment = if (isMine) Alignment.End else Alignment.Start) {
                     val time = message.createTime.substring(11, 16)
-                    val date = message.createTime.substring(0, 10)
                     Text(
                         text = time,
                         style = MaterialTheme.typography.bodySmall,

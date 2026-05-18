@@ -14,22 +14,17 @@ import androidx.compose.ui.platform.LocalContext
 object ThemeManager {
     private const val DARK_MODE_KEY = "dark_mode"
     private const val DYNAMIC_COLOR_KEY = "dynamic_color"
-
     var darkMode by mutableStateOf(false)
-
     var dynamicColor by mutableStateOf(true)
-
     init {
         val mmkv = com.tencent.mmkv.MMKV.defaultMMKV()
         darkMode = mmkv.decodeBool(DARK_MODE_KEY, false)
         dynamicColor = mmkv.decodeBool(DYNAMIC_COLOR_KEY, true)
     }
-
     fun changeDarkMode(dark: Boolean) {
         darkMode = dark
         com.tencent.mmkv.MMKV.defaultMMKV().encode(DARK_MODE_KEY, dark)
     }
-
     fun changeDynamicColor(dynamic: Boolean) {
         dynamicColor = dynamic
         com.tencent.mmkv.MMKV.defaultMMKV().encode(DYNAMIC_COLOR_KEY, dynamic)

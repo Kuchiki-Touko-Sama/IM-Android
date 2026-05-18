@@ -1,6 +1,9 @@
 package io.github.touko.feature.home.ui.componement
 
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
@@ -35,44 +38,43 @@ fun ToolBar(
 ) {
     HorizontalFloatingToolbar(
         expanded = true,
-        modifier = modifier.width(300.dp),
+        expandedShadowElevation = 9.dp,
+        modifier = modifier.padding(bottom = 10.dp),
         colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(
-            toolbarContainerColor = MaterialTheme.colorScheme.secondaryContainer
-        )
+            toolbarContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.8f)
+        ),
     ) {
-        IconButton(
-            modifier = Modifier.weight(1f),
-            onClick = { onTabSelected(CurrentMainTab.ChatList) },
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.Chat,
-                contentDescription = null,
-                tint = tabTint(currentTab == CurrentMainTab.ChatList),
-                modifier = Modifier.weight(1f)
-            )
-        }
-
-        IconButton(
-            modifier = Modifier.weight(1f),
-            onClick = { onTabSelected(CurrentMainTab.FriendManager) }
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Person,
-                contentDescription = null,
-                tint = tabTint(currentTab == CurrentMainTab.FriendManager),
-                modifier = Modifier.weight(1f)
-            )
-        }
-        IconButton(
-            modifier = Modifier.weight(1f),
-            onClick = { onTabSelected(CurrentMainTab.Settings) }
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Settings,
-                contentDescription = null,
-                tint = tabTint(currentTab == CurrentMainTab.Settings),
-                modifier = Modifier.weight(1f)
-            )
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            IconButton(
+                onClick = { onTabSelected(CurrentMainTab.ChatList) },
+                modifier = Modifier.width(60.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.Chat,
+                    contentDescription = null,
+                    tint = tabTint(currentTab == CurrentMainTab.ChatList),
+                )
+            }
+            IconButton(
+                onClick = { onTabSelected(CurrentMainTab.FriendManager) },
+                modifier = Modifier.width(60.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = null,
+                    tint = tabTint(currentTab == CurrentMainTab.FriendManager),
+                )
+            }
+            IconButton(
+                onClick = { onTabSelected(CurrentMainTab.Settings) },
+                modifier = Modifier.width(60.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = null,
+                    tint = tabTint(currentTab == CurrentMainTab.Settings),
+                )
+            }
         }
     }
 }

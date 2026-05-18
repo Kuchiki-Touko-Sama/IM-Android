@@ -7,6 +7,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -41,6 +45,7 @@ import io.github.touko.navigation.ChatPage
 import io.github.touko.navigation.LoginPage
 import io.github.touko.navigation.MainPage
 import io.github.touko.navigation.NavigatorManager
+import io.github.touko.navigation.ProfilePage
 import io.github.touko.navigation.RegisterPage
 import io.github.touko.ui.theme.Im_android_appTheme
 import kotlinx.coroutines.delay
@@ -70,7 +75,7 @@ class MainActivity : ComponentActivity() {
                 if (NavigatorManager.backStack.isEmpty()) {
                     NavigatorManager.replace(startPage)
                 }
-                // 2. 显式添加 BackHandler，强制拦截所有返回事件
+                // 2.  BackHandler，强制拦截所有返回事件
                 Scaffold(
                     snackbarHost = {
                         Box(
@@ -118,7 +123,34 @@ class MainActivity : ComponentActivity() {
                     }
                     NavDisplay(
                         backStack = NavigatorManager.backStack,
-                        onBack = { NavigatorManager.back() }
+                        onBack = { NavigatorManager.back() },
+                        transitionSpec = {
+                            slideInHorizontally(
+                                initialOffsetX = { it },
+                                animationSpec = tween(500)
+                            ) togetherWith slideOutHorizontally(
+                                targetOffsetX = { -it },
+                                animationSpec = tween(500)
+                            )
+                        },
+                        popTransitionSpec = {
+                            slideInHorizontally(
+                                initialOffsetX = { -it },
+                                animationSpec = tween(500)
+                            ) togetherWith slideOutHorizontally(
+                                targetOffsetX = { it },
+                                animationSpec = tween(500)
+                            )
+                        },
+                        predictivePopTransitionSpec = {
+                            slideInHorizontally(
+                                initialOffsetX = { -it },
+                                animationSpec = tween(500)
+                            ) togetherWith slideOutHorizontally(
+                                targetOffsetX = { it },
+                                animationSpec = tween(500)
+                            )
+                        }
                     ) { key ->
                         when (key) {
                             is LoginPage -> NavEntry(key) { LoginScreen() }
@@ -130,7 +162,7 @@ class MainActivity : ComponentActivity() {
                                     key.userName
                                 )
                             }
-                            is io.github.touko.navigation.ProfilePage -> NavEntry(key) { ProfileScreen() }
+                            is ProfilePage -> NavEntry(key) { ProfileScreen() }
                         }
                     }
                 }

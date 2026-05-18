@@ -16,6 +16,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -51,24 +52,17 @@ fun PendingApplyList(
                     trailingContent = {
                         Row {
                             IconButton(
-                                onClick = {
-                                    onAccept(apply.friendApplyId, apply.senderId)
-                                },
+                                onClick = { onRefuse(apply.friendApplyId, apply.senderId) },
+                            ) { Icon(Icons.Default.Close, null) }
+
+                            OutlinedIconButton(
+                                onClick = { onAccept(apply.friendApplyId, apply.senderId) },
                                 colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.primary
+                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
                                 ),
                             ) { Icon(Icons.Default.Check, null) }
 
-                            IconButton(
-                                onClick = {
-                                    onRefuse(apply.friendApplyId, apply.senderId)
-                                },
-                                colors = IconButtonDefaults.iconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.primary
-                                )
-                            ) { Icon(Icons.Default.Close, null) }
+
                         }
                     },
                     modifier = Modifier.fillMaxWidth()

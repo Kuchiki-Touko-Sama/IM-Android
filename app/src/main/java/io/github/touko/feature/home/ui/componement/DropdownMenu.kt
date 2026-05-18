@@ -21,24 +21,23 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.local.LocalUserManager
-import io.github.touko.navigation.NavigatorManager
 import io.github.touko.navigation.LoginPage
+import io.github.touko.navigation.NavigatorManager
 
 @Composable
 fun DropdownMenu( modifier: Modifier = Modifier) {
     var expanded by remember { mutableStateOf(false) }
     val context = LocalContext.current
-    Box(
-        modifier = modifier
-    ) {
+    Box(modifier = modifier) {
         IconButton(onClick = { expanded = !expanded }) {
             Icon(Icons.Default.MoreVert, contentDescription = "More options")
         }
         DropdownMenu(
+            tonalElevation = 4.dp,
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            shape = RoundedCornerShape(20.dp),
-            containerColor = MaterialTheme.colorScheme.secondaryContainer,
+            shape = RoundedCornerShape(30.dp),
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
             offset = DpOffset(
                 x = (-8).dp,
                 y = 20.dp

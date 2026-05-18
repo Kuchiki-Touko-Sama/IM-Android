@@ -79,6 +79,7 @@ fun UserTopBar(
         ),
         // 设置顶栏颜色和高度
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer)
+            containerColor = MaterialTheme.colorScheme.surfaceContainer,
         )
+    )
 }

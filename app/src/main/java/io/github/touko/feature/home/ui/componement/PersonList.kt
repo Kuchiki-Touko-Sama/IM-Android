@@ -12,17 +12,19 @@ import androidx.compose.material.icons.filled.HourglassFull
 import androidx.compose.material.icons.filled.Person2
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import io.github.touko.data.model.response.TargetUser
 import io.github.touko.feature.home.state.CurrentUserState
-import io.github.touko.feature.home.state.FriendState.*
+import io.github.touko.feature.home.state.FriendState.FRIEND
+import io.github.touko.feature.home.state.FriendState.NONE
+import io.github.touko.feature.home.state.FriendState.PENDING
 
 
 @Composable
@@ -47,13 +49,11 @@ fun PersonList(
                     )
                 },
                 trailingContent = {
-                    IconButton(
-                        onClick = {
-                            onAddPerson(person.userId)
-                        },
-                        colors = IconButtonDefaults.iconButtonColors().copy(
-                            containerColor = MaterialTheme.colorScheme.primaryContainer,
-                            contentColor = MaterialTheme.colorScheme.primary
+                    Float
+                    OutlinedIconButton(
+                        onClick = { onAddPerson(person.userId) },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceContainer,
                         ),
                         enabled = when(CurrentUserState.friendships[person.userId]) {
                             PENDING, FRIEND -> false

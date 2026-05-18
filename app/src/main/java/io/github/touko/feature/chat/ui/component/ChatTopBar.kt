@@ -38,11 +38,10 @@ fun ChatTopBar(
         title = {
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
+
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         userName,
                         style = MaterialTheme.typography.titleLarge,
@@ -65,7 +64,7 @@ fun ChatTopBar(
         ),
         // 设置顶栏颜色和高度
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         )
     )
 }
