@@ -9,11 +9,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import io.github.touko.R
 import io.github.touko.feature.home.HomeViewModel
@@ -56,6 +57,7 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                 .fillMaxSize()
                 .padding(top = innerPadding.calculateTopPadding())
         ) {
+            val lastMessages by viewModel.lastMessages.collectAsStateWithLifecycle()
             when (viewModel.currentMainTab) {
                 CurrentMainTab.ChatList -> {
                     Column {
@@ -67,7 +69,7 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                         )
                         FriendList(
                             friends = viewModel.friendList,
-                            lastMessages = viewModel.lastMessages.collectAsState().value,
+                            lastMessages = lastMessages,
                             modifier = Modifier.fillMaxSize()
                         )
                     }

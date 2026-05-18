@@ -24,9 +24,9 @@ import io.github.touko.navigation.NavigatorManager
 
 @Composable
 fun FriendList(
+    modifier: Modifier = Modifier,
     friends: List<Friendship>,
     lastMessages: Map<Int, LastMessage> = emptyMap(),
-    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(0.dp),

@@ -34,10 +34,10 @@ class HomeViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>("")
 
-    // 使用 snapshotFlow 配合后面的 flatMapLatest，让数据变动成为驱动源
+
     private val _friendListFlow = MutableStateFlow<List<Friendship>>(emptyList())
     var friendList by mutableStateOf<List<Friendship>>(emptyList())
-        private set // 限制只能在 ViewModel 内部修改
+        private set
 
     var personList by mutableStateOf<List<TargetUser>>(emptyList())
     var friendApplyList by mutableStateOf<List<FriendshipApply>>(emptyList())
@@ -53,12 +53,14 @@ class HomeViewModel : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val lastMessages: StateFlow<Map<Int, LastMessage>> = _friendListFlow
+        // 根据friendList变化进行最新消息同步
         .flatMapLatest { friends ->
             val uid = CurrentUserState.uid
             if (uid == 0 || friends.isEmpty()) {
-                flowOf(emptyList()) // 条件不满足时返回空数据
+                flowOf(emptyList())
             } else {
                 val friendIds = friends.map { it.friendId }
+                Log.d("lastMsg", friendIds.toString())
                 // 监听 Room，数据库一变这边自动发射新数据
                 messageDao.getLastMessagesForFriends(uid, friendIds)
             }
@@ -108,9 +110,9 @@ class HomeViewModel : ViewModel() {
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e("HomeViewModel", "轮询请求失败，等待下次重试", e)
+                    Log.e("HomeViewModel", "轮询同步", e)
                 }
-                delay(1000) // 1秒轮询一次
+                delay(1000)
             }
         }
     }
