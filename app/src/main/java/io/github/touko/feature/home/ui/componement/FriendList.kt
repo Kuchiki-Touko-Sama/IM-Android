@@ -65,7 +65,6 @@ fun FriendList(
                         messageContent,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-
                         )
                 },
                 modifier = Modifier

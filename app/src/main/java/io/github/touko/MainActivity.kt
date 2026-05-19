@@ -32,9 +32,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import io.github.touko.data.local.LocalUserManager
+import io.github.touko.data.remote.AppLifecycleObserver
 import io.github.touko.data.remote.ChatWebSocketManager
 import io.github.touko.feature.chat.ui.ChatScreen
 import io.github.touko.feature.home.ui.MainScreen
@@ -47,7 +49,7 @@ import io.github.touko.navigation.MainPage
 import io.github.touko.navigation.NavigatorManager
 import io.github.touko.navigation.ProfilePage
 import io.github.touko.navigation.RegisterPage
-import io.github.touko.ui.theme.Im_android_appTheme
+import io.github.touko.ui.theme.AppTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -61,13 +63,14 @@ class MainActivity : ComponentActivity() {
 
         val startPage = if (LocalUserManager.getUid() == 0) LoginPage else MainPage
 
-        val userId = LocalUserManager.getUid()
-        if (userId != 0)
-            ChatWebSocketManager.connect(userId)
-
+        ChatWebSocketManager.connect()
+        ProcessLifecycleOwner
+            .get()
+            .lifecycle
+            .addObserver(AppLifecycleObserver())
 
         setContent {
-            Im_android_appTheme {
+            AppTheme {
                 val context = LocalContext.current
                 var lastBackTime by remember { mutableLongStateOf(0L) }
                 val snackbarHostState = remember { SnackbarHostState() }
@@ -101,23 +104,20 @@ class MainActivity : ComponentActivity() {
                 ) { _ ->
                     BackHandler(enabled = NavigatorManager.backStack.isNotEmpty()) {
                         if (NavigatorManager.backStack.size > 1) {
-                            // 如果有多个页面，执行正常返回
                             NavigatorManager.back()
                         } else {
-                            // 如果是根页面，执行“双击退出”逻辑
                             val currentTime = System.currentTimeMillis()
                             if (currentTime - lastBackTime < 1000) {
                                 (context as? Activity)?.finish()
                             } else {
                                 lastBackTime = currentTime
                                 scope.launch {
-                                    val snackJob = launch {
+                                    launch {
                                         snackbarHostState.showSnackbar("再按一次退出应用", duration = SnackbarDuration.Indefinite)
                                     }
                                     delay(1000)
                                     snackbarHostState.currentSnackbarData?.dismiss()
                                 }
-
                             }
                         }
                     }

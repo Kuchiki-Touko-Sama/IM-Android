@@ -33,7 +33,6 @@ class RegisterViewModel : ViewModel() {
     fun register() {
         if (!isValidForm())
             return
-
         viewModelScope.launch {
             isLoading = true
             errorMessage = null

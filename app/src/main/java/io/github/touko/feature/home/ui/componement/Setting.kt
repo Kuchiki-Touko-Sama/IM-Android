@@ -37,20 +37,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import io.github.touko.data.local.LocalUserManager
+import io.github.touko.R
 import io.github.touko.ui.theme.ThemeManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Setting(
-    onNavigateToProfile: () -> Unit = {}
-) {
-    val userName by remember { mutableStateOf(LocalUserManager.getUsername() ?: "") }
+fun Setting(onNavigateToProfile: () -> Unit = {}) {
     var showAboutDialog by remember { mutableStateOf(false) }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -159,10 +156,12 @@ fun SettingsItem(
                 )
             }
             IconButton(onClick = onClick) {
-                Icon(imageVector = Icons.Default.ChevronRight,
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
                     contentDescription = null,
                     tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    modifier = Modifier.size(20.dp))
+                    modifier = Modifier.size(20.dp)
+                )
             }
         }
     }
@@ -229,11 +228,9 @@ fun AboutDialog(onDismiss: () -> Unit) {
             )
         },
         text = {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
+            Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
-                    text = "IM Android App",
+                    text = "IM Android",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -253,12 +250,12 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "23自动化 赵睿哲",
+                    text = "23 赵睿哲",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "23自动化 陈旭东",
+                    text = "23 陈旭东",
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -272,18 +269,35 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
-                TextButton(
-                    onClick = {
-                        try {
-
-                        } catch (e: Exception) {
-                        }
-                    }
-                ) {
-                    Text(
-                        text = "github.com/touko",
-                        color = MaterialTheme.colorScheme.primary
+                Row {
+                    Icon(
+                        painter = painterResource(R.drawable.github),
+                        null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .align(Alignment.CenterVertically)
                     )
+                    TextButton(onClick = {}) {
+                        Text(
+                            text = "安卓前端：https://github.com/Kuchiki-Touko-Sama/IM-Android",
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                Row {
+                    Icon(
+                        painter = painterResource(R.drawable.github),
+                        null,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .align(Alignment.CenterVertically)
+                    )
+                    TextButton(onClick = {}) {
+                        Text(
+                            text = "服务器后端：https://github.com/Kuchiki-Touko-Sama/IM-Android",
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
                 }
             }
         },
@@ -294,3 +308,4 @@ fun AboutDialog(onDismiss: () -> Unit) {
         }
     )
 }
+

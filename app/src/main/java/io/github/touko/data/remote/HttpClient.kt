@@ -22,7 +22,8 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.io.IOException
 
 object HttpClient {
-    private const val BASE_URL = "http://192.168.31.224:8080/api/"
+    private const val DOMAIN = "784514.xyz"
+    private const val BASE_URL = "https://${DOMAIN}/api/"
     private val json = Json {
         ignoreUnknownKeys = true
     }

@@ -67,7 +67,6 @@ class HomeViewModel : ViewModel() {
             }
         }
         .map { entities ->
-            // 把 Room 实体类映射为 UI 需要的 Model 结构
             entities.associate { entity ->
                 entity.friendId to LastMessage(
                     friendId = entity.friendId,
@@ -97,7 +96,7 @@ class HomeViewModel : ViewModel() {
                     if (response.code == 200 && response.data != null) {
                         val newData = response.data
                         friendList = newData
-                        _friendListFlow.value = newData // 触发 lastMessages 链条更新
+                        _friendListFlow.value = newData
                         for (friendship in newData)
                             CurrentUserState.friendships[friendship.friendId] = FriendState.FRIEND
                     }

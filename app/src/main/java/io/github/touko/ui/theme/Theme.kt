@@ -32,7 +32,7 @@ object ThemeManager {
 }
 
 @Composable
-fun Im_android_appTheme(
+fun AppTheme(
     darkTheme: Boolean = ThemeManager.darkMode,
     dynamicColor: Boolean = ThemeManager.dynamicColor,
     content: @Composable () -> Unit

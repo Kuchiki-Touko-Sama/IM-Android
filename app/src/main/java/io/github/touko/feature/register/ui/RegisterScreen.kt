@@ -93,7 +93,7 @@ fun RegisterScreen(
 
                     Row(modifier = Modifier.align(Alignment.End)) {
                         TextButton(onClick = { NavigatorManager.goTo(LoginPage) }) {
-                            Text("返回登录页面")
+                            Text("返回")
                         }
 
                         Button(
