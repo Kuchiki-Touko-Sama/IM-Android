@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import io.github.touko.App
+import io.github.touko.BuildConfig
 import io.github.touko.data.local.TokenManager
 import io.github.touko.data.remote.api.FriendApi
 import io.github.touko.data.remote.api.MessageApi
@@ -22,11 +24,8 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.io.IOException
 
 object HttpClient {
-    private const val DOMAIN = "784514.xyz"
-    private const val BASE_URL = "https://${DOMAIN}/api/"
-    private val json = Json {
-        ignoreUnknownKeys = true
-    }
+    private const val BASE_URL = "http://${BuildConfig.DOMAIN}/api/"
+    private val json = Json { ignoreUnknownKeys = true }
     private val okHttpClient = OkHttpClient
         .Builder()
         .addInterceptor(HttpLoggingInterceptor().apply {
@@ -61,31 +60,28 @@ object HttpClient {
     }
 }
 
+suspend fun <T> safeApiCall(call: suspend () -> T): Result<T> =
+    try {
+        Result.success(call())
+    } catch (e: NoNetworkException) {
+        Result.failure(e)
+    } catch (e: Exception) {
+        Result.failure(e)
+    }
 class GlobalInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        if (!isNetworkConnected(context)) {
-            // 直接抛出异常，请求不会发出去
+        if (!isNetworkConnected(context))
             throw NoNetworkException()
-        }
         val token = TokenManager.getToken()
         val request = chain.request()
             .newBuilder()
             .apply {
-                if (!token.isNullOrEmpty()) {
-                    addHeader(
-                        "Authorization",
-                        token
-                    )
-                }
+                if (!token.isNullOrEmpty())
+                    addHeader("Authorization", token)
             }
             .build()
-
-        val response = try {
-            chain.proceed(request)
-        } catch (e: Exception) {
-            throw e
-        }
-
+        Log.d("my-im", "intercept: $request")
+        val response = chain.proceed(request)
         if (!response.isSuccessful) {
             when (response.code) {
                 401 -> {
@@ -105,6 +101,5 @@ class GlobalInterceptor(private val context: Context) : Interceptor {
         return capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
     }
 }
-
 
 class NoNetworkException(message: String = "当前无网络连接") : IOException(message)

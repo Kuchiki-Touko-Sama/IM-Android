@@ -35,6 +35,7 @@ enum class CurrentMainTab {
     FriendManager,
     Settings
 }
+
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun MainScreen(viewModel: HomeViewModel = viewModel()) {
@@ -46,10 +47,10 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                     "online",
                     null
                 )
+
                 else -> {}
             }
         },
-        modifier = Modifier.fillMaxSize()
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -75,6 +76,7 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                         )
                     }
                 }
+
                 CurrentMainTab.FriendManager -> {
                     Column {
                         ToukoSearchBar(
@@ -99,6 +101,7 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                         }
                     }
                 }
+
                 CurrentMainTab.Settings -> {
                     Setting(onNavigateToProfile = { NavigatorManager.goTo(ProfilePage) })
                 }

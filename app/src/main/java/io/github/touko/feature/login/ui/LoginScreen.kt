@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
@@ -18,10 +19,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -34,7 +40,18 @@ import io.github.touko.navigation.RegisterPage
 
 @Composable
 fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
-    Surface {
+    val snackbarHostState = remember { SnackbarHostState() }
+    LaunchedEffect(viewModel.errorMessage) {
+        viewModel.errorMessage?.let {
+            snackbarHostState.showSnackbar(
+                message = it,
+                duration = SnackbarDuration.Short
+            )
+        }
+    }
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState, modifier = Modifier.width(200.dp)) }
+    ) { _ ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -43,7 +60,6 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-
             OutlinedCard(
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 6.dp

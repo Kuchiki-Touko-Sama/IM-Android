@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.touko.data.model.request.RegisterRequest
 import io.github.touko.data.remote.HttpClient
+import io.github.touko.data.remote.NoNetworkException
+import io.github.touko.data.remote.safeApiCall
 import io.github.touko.navigation.LoginPage
 import io.github.touko.navigation.NavigatorManager
 import kotlinx.coroutines.launch
@@ -25,7 +27,6 @@ class RegisterViewModel : ViewModel() {
     fun updatePassword(newValue: String) {
         password = newValue
     }
-
     fun updateConfirmPassword(newValue: String) {
         confirmPassword = newValue
     }
@@ -36,16 +37,23 @@ class RegisterViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-            val response = HttpClient.userApi.register(RegisterRequest(username, password))
-            if (response.code == 200)
-                NavigatorManager.goTo(LoginPage)
-            else
-                errorMessage = response.message
 
+            safeApiCall { HttpClient.userApi.register(RegisterRequest(username, password)) }
+                .onSuccess { resp ->
+                    if (resp.isSuccess())
+                        NavigatorManager.goTo(LoginPage)
+                    else
+                        errorMessage = resp.message
+                }
+                .onFailure { e ->
+                    errorMessage = when (e) {
+                        is NoNetworkException -> "无网络连接"
+                        else -> "网络请求失败"
+                    }
+                }
             isLoading = false
         }
     }
-
 
     fun isValidForm(): Boolean {
         if (username.isBlank() || password.isBlank() || confirmPassword.isBlank()) {

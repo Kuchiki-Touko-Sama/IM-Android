@@ -37,7 +37,6 @@ import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.ui.NavDisplay
 import io.github.touko.data.local.LocalUserManager
 import io.github.touko.data.remote.AppLifecycleObserver
-import io.github.touko.data.remote.ChatWebSocketManager
 import io.github.touko.feature.chat.ui.ChatScreen
 import io.github.touko.feature.home.ui.MainScreen
 import io.github.touko.feature.login.ui.LoginScreen
@@ -63,7 +62,6 @@ class MainActivity : ComponentActivity() {
 
         val startPage = if (LocalUserManager.getUid() == 0) LoginPage else MainPage
 
-        ChatWebSocketManager.connect()
         ProcessLifecycleOwner
             .get()
             .lifecycle

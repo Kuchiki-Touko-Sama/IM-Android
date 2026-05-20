@@ -21,12 +21,11 @@ class ProfileViewModel : ViewModel() {
     init {
         loadUserProfile()
     }
-
     private fun loadUserProfile() {
         viewModelScope.launch {
             _state.value = ProfileState(
                 uid = LocalUserManager.getUid(),
-                username = LocalUserManager.getUsername() ?: ""
+                username = LocalUserManager.getUsername()
             )
         }
     }

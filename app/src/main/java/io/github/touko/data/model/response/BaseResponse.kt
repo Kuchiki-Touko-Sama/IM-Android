@@ -7,4 +7,14 @@ data class BaseResponse<T>(
     val code: Int,
     val message: String,
     val data: T? = null
-)
+
+) {
+    fun isSuccess(): Boolean {
+        return this.code == 200
+    }
+
+    fun hasData(): Boolean {
+        return this.code == 200 && this.data != null
+    }
+}
+

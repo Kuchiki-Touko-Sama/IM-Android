@@ -11,13 +11,12 @@ room3 {
 android {
     namespace = "io.github.touko"
     compileSdk = 37
-
     defaultConfig {
         applicationId = "io.github.touko"
         minSdk = 31
         targetSdk = 37
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "1.1.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             //noinspection ChromeOsAbiSupport
@@ -26,7 +25,19 @@ android {
     }
 
     buildTypes {
+        debug {
+            buildConfigField(
+                "String",
+                "DOMAIN",
+                "\"192.168.31.224:8080\""
+            )
+        }
         release {
+            buildConfigField(
+                "String",
+                "DOMAIN",
+                "\"cn-qz-plc-1.ofalias.net:52396\""
+            )
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(
@@ -41,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -62,7 +74,6 @@ dependencies {
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.sqlite.bundled)
     implementation(libs.androidx.ui)
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
