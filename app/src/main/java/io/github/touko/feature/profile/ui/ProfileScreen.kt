@@ -30,10 +30,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.touko.R
 import io.github.touko.feature.profile.ProfileViewModel
 import io.github.touko.navigation.NavigatorManager
 
@@ -41,7 +43,6 @@ import io.github.touko.navigation.NavigatorManager
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
     val state by viewModel.state.collectAsState()
-
     Column {
         Row(
             modifier = Modifier.padding(top = 40.dp),
@@ -50,13 +51,13 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
             IconButton(onClick = { NavigatorManager.back() }) {
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "返回",
+                    contentDescription = stringResource(R.string.back),
                     modifier = Modifier.size(40.dp)
                 )
             }
             Spacer(modifier = Modifier.padding(5.dp))
             Text(
-                text = "个人信息",
+                text = stringResource(R.string.profile_title),
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold
@@ -104,7 +105,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     ProfileInfoRow(
-                        label = "UID",
+                        label = stringResource(R.string.uid),
                         value = state.uid.toString(),
                         editable = false
                     )
@@ -114,7 +115,7 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
                         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
                     )
                     ProfileInfoRow(
-                        label = "用户名",
+                        label = stringResource(R.string.username_label),
                         value = state.username,
                         editable = true,
                         onEdit = { }
@@ -159,7 +160,7 @@ fun ProfileInfoRow(
             IconButton(onClick = {}) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "编辑",
+                    contentDescription = stringResource(R.string.edit),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }

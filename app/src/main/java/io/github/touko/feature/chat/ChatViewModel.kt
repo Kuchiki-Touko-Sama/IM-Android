@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class ChatViewModel(val friendId: Int) : ViewModel() {
-
     var inputMessage by mutableStateOf("")
     val messageRepository = MessageRepository()
     var messageList = messageRepository.observeMessages(CurrentUserState.uid, friendId)
@@ -34,8 +33,6 @@ class ChatViewModel(val friendId: Int) : ViewModel() {
             }
         }
     }
-
-
 
     fun sendMessage() {
         if (inputMessage.isBlank())

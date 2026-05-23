@@ -30,9 +30,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.touko.R
 import io.github.touko.feature.login.LoginViewModel
 import io.github.touko.navigation.NavigatorManager
 import io.github.touko.navigation.RegisterPage
@@ -68,7 +70,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = "登录",
+                        text = stringResource(R.string.login_title),
                         style = MaterialTheme.typography.headlineMedium,
                     )
 
@@ -77,7 +79,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
                     OutlinedTextField(
                         value = viewModel.username,
                         onValueChange = viewModel::updateUsername,
-                        label = { Text("username") },
+                        label = { Text(stringResource(R.string.username_input)) },
                         maxLines = 1,
                         leadingIcon = { Icon(Icons.Default.Person, null) },
                         shape = RoundedCornerShape(20.dp),
@@ -88,7 +90,7 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
                     OutlinedTextField(
                         value = viewModel.password,
                         onValueChange = viewModel::updatePassword,
-                        label = { Text("password") },
+                        label = { Text(stringResource(R.string.password_input)) },
                         maxLines = 1,
                         leadingIcon = { Icon(Icons.Default.Lock, null) },
                         visualTransformation = PasswordVisualTransformation(),
@@ -99,13 +101,13 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
 
                     Row(modifier = Modifier.align(Alignment.End)) {
                         TextButton(onClick = { NavigatorManager.goTo(RegisterPage) }) {
-                            Text("注册")
+                            Text(stringResource(R.string.register_button))
                         }
                         Button(
                             onClick = viewModel::login,
                             enabled = !viewModel.isLoading,
                         ) {
-                            Text("登录")
+                            Text(stringResource(R.string.login_button))
                         }
                     }
                 }
@@ -113,4 +115,3 @@ fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
         }
     }
 }
-

@@ -5,10 +5,10 @@ import io.github.touko.App
 import io.github.touko.data.local.entity.MessageEntity
 import io.github.touko.data.local.entity.toMessage
 import io.github.touko.data.local.mapper.toEntity
+import io.github.touko.data.model.response.LastMessage
 import io.github.touko.data.model.response.Message
 import io.github.touko.data.remote.HttpClient.messageApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 
 class MessageRepository {
@@ -19,12 +19,20 @@ class MessageRepository {
             .map { entities ->
                 entities.map { it.toMessage() }
             }
-            .catch { e ->
-                Log.e("im-server", "流处理过程捕捉到异常: ${e.message}")
-                emit(emptyList())
-            }
     }
 
+    fun observeLastMessages(uid: Int): Flow<Map<Int, LastMessage>> {
+        return messageDao.observeLastMessages(uid)
+            .map { entities ->
+                entities.associate { entity ->
+                    entity.friendId to LastMessage(
+                        friendId = entity.friendId,
+                        content = entity.content,
+                        lastMessageTime = entity.lastMessageTime
+                    )
+                }
+            }
+    }
     suspend fun fetchHistoryFromServer(myId: Int) {
         try {
             val response = messageApi.history(myId)

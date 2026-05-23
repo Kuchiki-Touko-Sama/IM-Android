@@ -19,17 +19,18 @@ interface MessageDao {
     suspend fun insertAll(vararg messages: MessageEntity)
     @Delete
     suspend fun delete(message: MessageEntity)
+
     @Delete
     suspend fun deleteAll(vararg message: MessageEntity)
+
 
     @Query(
         """
         SELECT *
         FROM message
         WHERE
-        (senderId = :uid AND receiverId = :friendId)
-        OR
-        (senderId = :friendId AND receiverId = :uid)
+            (senderId = :uid AND receiverId = :friendId) OR
+            (senderId = :friendId AND receiverId = :uid)
         ORDER BY messageId ASC
     """
     )
@@ -60,7 +61,7 @@ interface MessageDao {
         WHERE rn = 1
         """
     )
-    fun getLastMessages(
+    fun observeLastMessages(
         uid: Int
     ): Flow<List<LastMessageEntity>>
 

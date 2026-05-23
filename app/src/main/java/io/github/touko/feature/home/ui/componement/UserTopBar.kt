@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
@@ -47,10 +46,9 @@ fun UserTopBar(
                             .clip(CircleShape),
                         tint = MaterialTheme.colorScheme.primary
                     )
-                    // 在线状态圆点
                     Surface(
                         shape = CircleShape,
-                        color = Color.Green,
+                        color = MaterialTheme.colorScheme.tertiary,
                         modifier = Modifier
                             .size(12.dp)
                             .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape)
@@ -77,7 +75,6 @@ fun UserTopBar(
         modifier = Modifier.clip(
             RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
         ),
-        // 设置顶栏颜色和高度
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer,
         )

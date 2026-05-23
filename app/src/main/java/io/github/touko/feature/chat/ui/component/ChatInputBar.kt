@@ -22,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.github.touko.R
 
 @Composable
 fun ChatInputBar(
@@ -31,14 +33,12 @@ fun ChatInputBar(
     onInputMessageChange: (String) -> Unit,
     inputMessage: String
 ) {
-
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .navigationBarsPadding()
             .imePadding()
             .padding(horizontal = 12.dp, vertical = 8.dp),
-
         tonalElevation = 3.dp,
         shadowElevation = 3.dp,
         shape = RoundedCornerShape(28.dp),
@@ -55,7 +55,7 @@ fun ChatInputBar(
                 onValueChange = onInputMessageChange,
                 modifier = Modifier.weight(1f),
                 placeholder = {
-                    Text("输入消息...")
+                    Text(stringResource(R.string.type_message))
                 },
                 shape = RoundedCornerShape(20.dp),
                 maxLines = 4,
@@ -74,7 +74,7 @@ fun ChatInputBar(
             ) {
                 Icon(
                     Icons.AutoMirrored.Filled.Send,
-                    contentDescription = "发送"
+                    contentDescription = stringResource(R.string.send)
                 )
             }
         }

@@ -87,13 +87,10 @@ dependencies {
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.okhttp.logging)
-    
     // icon
     implementation(libs.androidx.material.icons.core)
     implementation(libs.androidx.material.icons.extended)
-
     implementation(libs.mmkv)
-
     implementation(libs.androidx.room3.runtime)
     ksp(libs.androidx.room3.compiler)
 }

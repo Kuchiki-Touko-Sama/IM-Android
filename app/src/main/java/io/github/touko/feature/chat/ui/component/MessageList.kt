@@ -68,10 +68,7 @@ fun MessageList(
                                         MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest,
                                     shape = RoundedCornerShape(16.dp)
                                 )
-                                .padding(
-                                    horizontal = 14.dp,
-                                    vertical = 10.dp
-                                )
+                                .padding(horizontal = 14.dp, vertical = 10.dp)
                         ) {
                             Text(
                                 text = message.content,

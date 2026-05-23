@@ -30,9 +30,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import io.github.touko.R
 import io.github.touko.feature.register.RegisterViewModel
 import io.github.touko.navigation.LoginPage
 import io.github.touko.navigation.NavigatorManager
@@ -66,7 +68,7 @@ fun RegisterScreen(viewModel: RegisterViewModel = viewModel()) {
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Text(
-                        text = "创建一个账号",
+                        text = stringResource(R.string.create_account_title),
                         style = MaterialTheme.typography.headlineMedium,
                     )
 
@@ -75,7 +77,7 @@ fun RegisterScreen(viewModel: RegisterViewModel = viewModel()) {
                     OutlinedTextField(
                         value = viewModel.username,
                         onValueChange = viewModel::updateUsername,
-                        label = { Text("username") },
+                        label = { Text(stringResource(R.string.username_input)) },
                         maxLines = 1,
                         leadingIcon = { Icon(Icons.Default.Person, null) },
                         shape = RoundedCornerShape(20.dp),
@@ -86,7 +88,7 @@ fun RegisterScreen(viewModel: RegisterViewModel = viewModel()) {
                     OutlinedTextField(
                         value = viewModel.password,
                         onValueChange = viewModel::updatePassword,
-                        label = { Text("password") },
+                        label = { Text(stringResource(R.string.password_input)) },
                         visualTransformation = PasswordVisualTransformation(),
                         maxLines = 1,
                         leadingIcon = { Icon(Icons.Default.Lock, null) },
@@ -98,7 +100,7 @@ fun RegisterScreen(viewModel: RegisterViewModel = viewModel()) {
                     OutlinedTextField(
                         value = viewModel.confirmPassword,
                         onValueChange = viewModel::updateConfirmPassword,
-                        label = { Text("confirm password") },
+                        label = { Text(stringResource(R.string.confirm_password_input)) },
                         visualTransformation = PasswordVisualTransformation(),
                         maxLines = 1,
                         leadingIcon = { Icon(Icons.Default.Lock, null) },
@@ -109,14 +111,14 @@ fun RegisterScreen(viewModel: RegisterViewModel = viewModel()) {
 
                     Row(modifier = Modifier.align(Alignment.End)) {
                         TextButton(onClick = { NavigatorManager.goTo(LoginPage) }) {
-                            Text("返回")
+                            Text(stringResource(R.string.back))
                         }
 
                         Button(
                             onClick = viewModel::register,
                             enabled = !viewModel.isLoading,
                         ) {
-                            Text("注册")
+                            Text(stringResource(R.string.register_button))
                         }
                     }
                 }

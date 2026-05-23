@@ -44,10 +44,9 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
             when (viewModel.currentMainTab) {
                 CurrentMainTab.ChatList, CurrentMainTab.FriendManager -> UserTopBar(
                     CurrentUserState.username,
-                    "online",
+                    stringResource(R.string.status_online),
                     null
                 )
-
                 else -> {}
             }
         },
@@ -76,7 +75,6 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                         )
                     }
                 }
-
                 CurrentMainTab.FriendManager -> {
                     Column {
                         ToukoSearchBar(
@@ -84,7 +82,7 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                             placeholder = stringResource(R.string.search_people_placeholder)
                         )
                         if (viewModel.personList.isNotEmpty()) {
-                            Text("搜索结果", modifier = Modifier.padding(start = 20.dp))
+                            Text(stringResource(R.string.search_results), modifier = Modifier.padding(start = 20.dp))
                             PersonList(
                                 people = viewModel.personList,
                                 onAddPerson = viewModel::sendFriendshipApply
@@ -92,7 +90,10 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                             HorizontalDivider(modifier = Modifier.padding(10.dp))
                         }
                         if (viewModel.friendApplyList.isNotEmpty()) {
-                            Text("待处理的好友申请", modifier = Modifier.padding(start = 20.dp))
+                            Text(
+                                stringResource(R.string.pending_friend_apply),
+                                modifier = Modifier.padding(start = 20.dp)
+                            )
                             PendingApplyList(
                                 applyList = viewModel.friendApplyList,
                                 onAccept = viewModel::acceptFriendApply,
@@ -101,7 +102,6 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
                         }
                     }
                 }
-
                 CurrentMainTab.Settings -> {
                     Setting(onNavigateToProfile = { NavigatorManager.goTo(ProfilePage) })
                 }
@@ -118,4 +118,3 @@ fun MainScreen(viewModel: HomeViewModel = viewModel()) {
         }
     }
 }
-

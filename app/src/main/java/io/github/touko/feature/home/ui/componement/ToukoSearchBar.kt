@@ -24,13 +24,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import io.github.touko.R
 
 @Composable
 fun ToukoSearchBar(
     onSearch: (String) -> Unit,
     modifier: Modifier = Modifier,
-    placeholder: String = "Search"
+    placeholder: String = stringResource(R.string.search)
 ) {
     var query by remember { mutableStateOf("") }
     Row(

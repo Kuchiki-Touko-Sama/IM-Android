@@ -16,8 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import io.github.touko.R
 import io.github.touko.data.model.response.Friendship
 import io.github.touko.data.model.response.LastMessage
 import io.github.touko.navigation.ChatPage
@@ -43,7 +45,7 @@ fun FriendList(
     ) {
         items(items = uiState.friends, key = { it.friendshipId }) { friend ->
             val lastMessage = uiState.lastMessages[friend.friendId]
-            val messageContent = lastMessage?.content ?: "暂无消息"
+            val messageContent = lastMessage?.content ?: stringResource(R.string.no_messages)
             ListItem(
                 headlineContent = {
                     Text(

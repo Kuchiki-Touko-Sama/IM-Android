@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -55,56 +56,50 @@ fun Setting(onNavigateToProfile: () -> Unit = {}) {
             .padding(16.dp)
     ) {
         Text(
-            text = "设置",
+            text = stringResource(R.string.settings),
             style = MaterialTheme.typography.headlineMedium.copy(
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             ),
             modifier = Modifier.padding(vertical = 16.dp)
         )
-
         SettingsItem(
-            title = "个人信息",
-            subtitle = "查看和编辑您的个人信息",
+            title = stringResource(R.string.profile_title),
+            subtitle = stringResource(R.string.view_edit_profile),
             leadingIcon = Icons.Default.Person,
             onClick = onNavigateToProfile
         )
-
         HorizontalDivider(
             Modifier,
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
         )
-
         SettingsSwitchItem(
-            title = "明暗模式",
-            subtitle = if (ThemeManager.darkMode) "当前：深色模式" else "当前：浅色模式",
+            title = stringResource(R.string.dark_mode),
+            subtitle = if (ThemeManager.darkMode) stringResource(R.string.current_dark_mode) else stringResource(R.string.current_light_mode),
             leadingIcon = if (ThemeManager.darkMode) Icons.Default.Nightlight else Icons.Default.LightMode,
             checked = ThemeManager.darkMode,
             onCheckedChange = {
                 ThemeManager.changeDarkMode(it)
             }
         )
-
         SettingsSwitchItem(
-            title = "壁纸动态取色",
-            subtitle = if (ThemeManager.dynamicColor) "当前：已开启" else "当前：已关闭",
+            title = stringResource(R.string.dynamic_color),
+            subtitle = if (ThemeManager.dynamicColor) stringResource(R.string.current_enabled) else stringResource(R.string.current_disabled),
             leadingIcon = Icons.Default.ColorLens,
             checked = ThemeManager.dynamicColor,
             onCheckedChange = {
                 ThemeManager.changeDynamicColor(it)
             }
         )
-
         HorizontalDivider(
             Modifier,
             thickness = 1.dp,
             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f)
         )
-
         SettingsItem(
-            title = "关于",
-            subtitle = "查看应用信息",
+            title = stringResource(R.string.about),
+            subtitle = stringResource(R.string.view_app_info),
             leadingIcon = Icons.Default.Info,
             onClick = { showAboutDialog = true }
         )
@@ -223,19 +218,19 @@ fun AboutDialog(onDismiss: () -> Unit) {
         onDismissRequest = onDismiss,
         title = {
             Text(
-                text = "关于",
+                text = stringResource(R.string.about),
                 style = MaterialTheme.typography.titleLarge
             )
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 Text(
-                    text = "IM Android",
+                    text = stringResource(R.string.app_name),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "version: 1.0.0",
+                    text = stringResource(R.string.version),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -245,17 +240,17 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
                 Text(
-                    text = "开发者",
+                    text = stringResource(R.string.developer),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "23 赵睿哲",
+                    text = stringResource(R.string.developer1),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "23 陈旭东",
+                    text = stringResource(R.string.developer2),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -265,7 +260,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
                 Text(
-                    text = "GitHub 仓库",
+                    text = stringResource(R.string.github_repository),
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold
                 )
@@ -279,7 +274,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     )
                     TextButton(onClick = {}) {
                         Text(
-                            text = "安卓前端：https://github.com/Kuchiki-Touko-Sama/IM-Android",
+                            text = stringResource(R.string.frontend_repo),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -294,7 +289,7 @@ fun AboutDialog(onDismiss: () -> Unit) {
                     )
                     TextButton(onClick = {}) {
                         Text(
-                            text = "服务器后端：https://github.com/Kuchiki-Touko-Sama/IM-Android",
+                            text = stringResource(R.string.backend_repo),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -303,9 +298,8 @@ fun AboutDialog(onDismiss: () -> Unit) {
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("关闭")
+                Text(stringResource(R.string.close))
             }
         }
     )
 }
-

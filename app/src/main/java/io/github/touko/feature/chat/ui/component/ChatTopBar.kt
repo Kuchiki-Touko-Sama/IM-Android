@@ -39,7 +39,6 @@ fun ChatTopBar(
             Box(
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center,
-
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
@@ -62,7 +61,6 @@ fun ChatTopBar(
         modifier = Modifier.clip(
             RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
         ),
-        // 设置顶栏颜色和高度
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         )

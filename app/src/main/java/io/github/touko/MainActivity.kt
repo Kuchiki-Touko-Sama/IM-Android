@@ -59,9 +59,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         window.isNavigationBarContrastEnforced = false
-
         val startPage = if (LocalUserManager.getUid() == 0) LoginPage else MainPage
-
         ProcessLifecycleOwner
             .get()
             .lifecycle
@@ -111,7 +109,10 @@ class MainActivity : ComponentActivity() {
                                 lastBackTime = currentTime
                                 scope.launch {
                                     launch {
-                                        snackbarHostState.showSnackbar("再按一次退出应用", duration = SnackbarDuration.Indefinite)
+                                        snackbarHostState.showSnackbar(
+                                            message = "再按一次退出",
+                                            duration = SnackbarDuration.Indefinite
+                                        )
                                     }
                                     delay(1000)
                                     snackbarHostState.currentSnackbarData?.dismiss()

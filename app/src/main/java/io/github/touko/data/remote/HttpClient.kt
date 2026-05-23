@@ -68,6 +68,12 @@ suspend fun <T> safeApiCall(call: suspend () -> T): Result<T> =
     } catch (e: Exception) {
         Result.failure(e)
     }
+
+fun processNetworkError(e: Throwable) = when (e) {
+    is NoNetworkException -> "无网络连接"
+    else -> "请求失败"
+}
+
 class GlobalInterceptor(private val context: Context) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!isNetworkConnected(context))

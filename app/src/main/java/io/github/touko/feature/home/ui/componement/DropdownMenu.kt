@@ -18,8 +18,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import io.github.touko.R
 import io.github.touko.data.local.LocalUserManager
 import io.github.touko.navigation.LoginPage
 import io.github.touko.navigation.NavigatorManager
@@ -42,10 +44,9 @@ fun DropdownMenu( modifier: Modifier = Modifier) {
                 x = (-8).dp,
                 y = 20.dp
             )
-
         ) {
             DropdownMenuItem(
-                text = { Text("退出") },
+                text = { Text(stringResource(R.string.exit)) },
                 leadingIcon = { Icon(Icons.AutoMirrored.Filled.Logout, null) },
                 onClick = {
                     expanded = false

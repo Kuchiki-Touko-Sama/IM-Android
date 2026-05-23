@@ -42,7 +42,7 @@ fun ToolBar(
         modifier = modifier.padding(bottom = 10.dp),
         colors = FloatingToolbarDefaults.vibrantFloatingToolbarColors(
             toolbarContainerColor = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.8f)
-        ),
+        )
     ) {
         Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             IconButton(
