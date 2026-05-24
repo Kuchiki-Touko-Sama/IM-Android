@@ -20,7 +20,6 @@ class RegisterViewModel : ViewModel() {
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
 
-
     fun updateUsername(newValue: String) {
         username = newValue
     }

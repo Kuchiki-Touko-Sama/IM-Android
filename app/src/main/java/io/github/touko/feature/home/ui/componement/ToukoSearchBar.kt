@@ -42,9 +42,7 @@ fun ToukoSearchBar(
             .padding(20.dp)
             .height(40.dp)
             .clip(RoundedCornerShape(20.dp))
-            .background(
-                MaterialTheme.colorScheme.surfaceContainer
-            )
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(horizontal = 12.dp)
     ) {
         Icon(
@@ -53,9 +51,7 @@ fun ToukoSearchBar(
             modifier = Modifier.size(16.dp),
             tint = MaterialTheme.colorScheme.onSurfaceVariant
         )
-
         Spacer(modifier = Modifier.width(8.dp))
-
         BasicTextField(
             value = query,
             onValueChange = { username ->
@@ -68,14 +64,11 @@ fun ToukoSearchBar(
             ),
             modifier = Modifier.weight(1f),
             decorationBox = { innerTextField ->
-                Box(
-                    contentAlignment = Alignment.CenterStart
-                ) {
+                Box(contentAlignment = Alignment.CenterStart) {
                     if (query.isEmpty()) {
                         Text(
                             text = placeholder,
                             style = MaterialTheme.typography.bodySmall,
-
                             color = MaterialTheme
                                 .colorScheme
                                 .onSurfaceVariant

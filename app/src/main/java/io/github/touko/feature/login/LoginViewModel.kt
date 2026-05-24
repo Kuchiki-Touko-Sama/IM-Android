@@ -22,7 +22,6 @@ class LoginViewModel : ViewModel() {
     var password by mutableStateOf("")
     var isLoading by mutableStateOf(false)
     var errorMessage by mutableStateOf<String?>(null)
-
     fun updateUsername(newValue: String) {
         username = newValue
     }
@@ -36,7 +35,6 @@ class LoginViewModel : ViewModel() {
         viewModelScope.launch {
             isLoading = true
             errorMessage = null
-
             safeApiCall { HttpClient.userApi.login(LoginRequest(username, password)) }
                 .onSuccess { resp ->
                     if (resp.isSuccess()) {

@@ -69,9 +69,7 @@ fun UserTopBar(
                 }
             }
         },
-        actions = {
-            DropdownMenu()
-        },
+        actions = { DropdownMenu() },
         modifier = Modifier.clip(
             RoundedCornerShape(bottomStart = 20.dp, bottomEnd = 20.dp)
         ),

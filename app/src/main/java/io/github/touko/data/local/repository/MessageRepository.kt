@@ -7,7 +7,8 @@ import io.github.touko.data.local.entity.toMessage
 import io.github.touko.data.local.mapper.toEntity
 import io.github.touko.data.model.response.LastMessage
 import io.github.touko.data.model.response.Message
-import io.github.touko.data.remote.HttpClient.messageApi
+import io.github.touko.data.remote.HttpClient
+import io.github.touko.data.remote.safeApiCall
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -33,17 +34,27 @@ class MessageRepository {
                 }
             }
     }
-    suspend fun fetchHistoryFromServer(myId: Int) {
-        try {
-            val response = messageApi.history(myId)
-            if (response.code == 200 && response.data != null) {
-                //写入数据库，Flow 自动感应并刷新 UI
-                for (message in response.data)
-                    messageDao.insert(message.toEntity())
+    suspend fun fetchHistoryFromServer(uid: Int) {
+        safeApiCall { HttpClient.messageApi.history(uid) }
+            .onSuccess { response ->
+                if (response.isSuccess() && response.data != null) {
+                    for (message in response.data)
+                        messageDao.insert(message.toEntity())
+                }
             }
-        } catch (e: Exception) {
-            Log.d("im-server", "fetchHistoryFromServer: ${e.message}")
-        }
+            .onFailure { Log.d("Touko", "fetchHistoryFromServer: ${it.message}") }
+    }
+
+    suspend fun syncMessagesFromServer(uid: Int) {
+        val lastMessageId = messageDao.getLastMessageId()
+        safeApiCall { HttpClient.messageApi.sync(uid, lastMessageId) }
+            .onSuccess { response ->
+                if (response.isSuccess() && response.data != null) {
+                    for (message in response.data)
+                        messageDao.insert(message.toEntity())
+                }
+            }
+            .onFailure { Log.d("Touko", "syncMessagesFromServer: ${it.message}") }
     }
 
     suspend fun saveMessage(entity: MessageEntity) {

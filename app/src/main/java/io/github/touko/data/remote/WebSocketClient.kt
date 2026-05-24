@@ -5,6 +5,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import io.github.touko.BuildConfig
 import io.github.touko.data.local.LocalUserManager
+import io.github.touko.data.local.repository.MessageRepository
 import io.github.touko.data.model.request.SendMessageRequest
 import io.github.touko.data.model.response.Message
 import kotlinx.coroutines.CoroutineScope
@@ -23,16 +24,15 @@ import okhttp3.WebSocketListener
 import kotlin.math.pow
 
 object ChatWebSocketManager {
-    private val client = OkHttpClient() // 建议在真实项目中通过依赖注入（如 Hilt）复用全局 client
+    private val client = OkHttpClient()
     private const val BASE_WS_URL = "ws://${BuildConfig.DOMAIN}/ws"
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
+    private val messageRepository = MessageRepository()
 
     @Volatile
     private var webSocket: WebSocket? = null
-
     @Volatile
     private var reconnectAttempt = 0
-
     @Volatile
     private var isManualClose = false
     private var reconnectJob: Job? = null
@@ -57,10 +57,11 @@ object ChatWebSocketManager {
             request,
             listener = object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
-                    Log.d("my-im", "WebSocket 连接成功")
                     reconnectAttempt = 0
+                    managerScope.launch(Dispatchers.IO) {
+                        messageRepository.syncMessagesFromServer(LocalUserManager.getUid())
+                    }
                 }
-
                 override fun onMessage(webSocket: WebSocket, text: String) {
                     try {
                         val message = Json.decodeFromString<Message>(text)
@@ -69,18 +70,16 @@ object ChatWebSocketManager {
                         // 缓冲区满降级到协程中推送消息
                             managerScope.launch { messageFlow.emit(message) }
                     } catch (e: Exception) {
-                        Log.e("my-im", "解析消息失败", e)
+                        Log.e("Touko", "解析消息失败: ${e.message}")
                     }
                 }
-
                 override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-                    Log.e("my-im", "WebSocket 连接异常: ${t.message}")
+                    Log.e("Touko", "WebSocket 连接异常: ${t.message}")
                     if (!isManualClose)
                         reconnect()
                 }
-
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
-                    Log.d("ChatWebSocketManager", "WebSocket 已关闭: $reason")
+                    Log.d("Touko", "WebSocket 已关闭: $reason")
                 }
             }
         )
@@ -91,11 +90,12 @@ object ChatWebSocketManager {
         if (isManualClose) return
         if (reconnectJob?.isActive == true) return
 
-        val delayTime = (2.0.pow(reconnectAttempt).toLong() * 1000).coerceAtMost(30000)
+        val delayTime = (2.0.pow(reconnectAttempt).toLong() * 1000)
+            .coerceAtMost(30000)
         reconnectAttempt++
         reconnectJob = managerScope.launch {
             delay(delayTime)
-            Log.d("ChatWebSocketManager", "正在尝试第 $reconnectAttempt 次重连...")
+            Log.d("Touko", "正在尝试第 $reconnectAttempt 次重连...")
             connect()
         }
     }
@@ -108,26 +108,25 @@ object ChatWebSocketManager {
         webSocket = null
         reconnectAttempt = 0
     }
+
     fun send(message: SendMessageRequest) {
         val text = Json.encodeToString(message)
         try {
             webSocket?.send(text)
         } catch (e: Exception) {
-            Log.e("my-im", "发送消息失败", e)
+            reconnect();
         }
-
     }
 }
 
 class AppLifecycleObserver : DefaultLifecycleObserver {
     override fun onStart(owner: LifecycleOwner) {
         super.onStart(owner)
-        Log.d("APP", "应用回到前台，尝试重连 WebSocket")
         ChatWebSocketManager.connect()
     }
+
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
-        Log.d("APP", "应用进入后台，主动切断 WebSocket 连接")
         ChatWebSocketManager.disconnect()
     }
 }

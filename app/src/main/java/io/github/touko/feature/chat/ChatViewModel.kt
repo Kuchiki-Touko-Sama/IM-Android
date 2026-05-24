@@ -27,7 +27,7 @@ class ChatViewModel(val friendId: Int) : ViewModel() {
 
     init {
         viewModelScope.launch {
-            // 接收websocket 回显的消息
+            // 接收websocket 回显消息
             ChatWebSocketManager.messageFlow.collect { message ->
                 onReceiveMessage(message)
             }

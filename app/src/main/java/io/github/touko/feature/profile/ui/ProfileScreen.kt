@@ -73,7 +73,6 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // 头像和用户名展示 Card
             Box(modifier = Modifier.fillMaxWidth()) {
                 Row(
                     modifier = Modifier
@@ -98,7 +97,6 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
                 }
             }
 
-            // 可编辑信息 Card
             OutlinedCard(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier.padding(16.dp),
@@ -124,8 +122,6 @@ fun ProfileScreen(viewModel: ProfileViewModel = viewModel()) {
             }
         }
     }
-
-
 }
 
 @Composable

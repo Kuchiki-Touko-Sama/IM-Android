@@ -19,11 +19,8 @@ interface MessageDao {
     suspend fun insertAll(vararg messages: MessageEntity)
     @Delete
     suspend fun delete(message: MessageEntity)
-
     @Delete
     suspend fun deleteAll(vararg message: MessageEntity)
-
-
     @Query(
         """
         SELECT *
@@ -65,4 +62,6 @@ interface MessageDao {
         uid: Int
     ): Flow<List<LastMessageEntity>>
 
+    @Query("SELECT COALESCE(MAX(messageId), 0) FROM message")
+    suspend fun getLastMessageId(): Int
 }
