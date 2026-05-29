@@ -118,7 +118,7 @@ object ChatWebSocketManager {
         try {
             webSocket?.send(text)
         } catch (e: Exception) {
-            reconnect();
+            reconnect()
         }
     }
 }
