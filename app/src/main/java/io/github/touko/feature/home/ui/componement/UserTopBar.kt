@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
@@ -48,7 +49,7 @@ fun UserTopBar(
                     )
                     Surface(
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.tertiary,
+                        color = Color.Green,
                         modifier = Modifier
                             .size(12.dp)
                             .border(2.dp, MaterialTheme.colorScheme.surface, CircleShape)

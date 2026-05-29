@@ -56,6 +56,7 @@ object ChatWebSocketManager {
         webSocket = client.newWebSocket(
             request,
             listener = object : WebSocketListener() {
+                // 创建websocket实例时重写listener中的onOpen回调，确保每次建立websocket连接时本地消息都是最新
                 override fun onOpen(webSocket: WebSocket, response: Response) {
                     reconnectAttempt = 0
                     managerScope.launch(Dispatchers.IO) {
@@ -95,7 +96,6 @@ object ChatWebSocketManager {
         reconnectAttempt++
         reconnectJob = managerScope.launch {
             delay(delayTime)
-            Log.d("Touko", "正在尝试第 $reconnectAttempt 次重连...")
             connect()
         }
     }
