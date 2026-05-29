@@ -63,8 +63,6 @@ object HttpClient {
 suspend fun <T> safeApiCall(call: suspend () -> T): Result<T> =
     try {
         Result.success(call())
-    } catch (e: NoNetworkException) {
-        Result.failure(e)
     } catch (e: Exception) {
         Result.failure(e)
     }

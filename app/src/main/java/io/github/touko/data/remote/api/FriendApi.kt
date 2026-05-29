@@ -15,7 +15,7 @@ interface FriendApi {
 
     @POST("friendApply/sendFriendApply")
     suspend fun applyFriend(@Body sendFriendApplyRequest: SendFriendApplyRequest)
-    : BaseResponse<Boolean>
+            : BaseResponse<Boolean>
 
     @POST("friendApply/getFriendApply")
     suspend fun getFriendApply(@Body userId: Int): GetFriendshipApplyResponse

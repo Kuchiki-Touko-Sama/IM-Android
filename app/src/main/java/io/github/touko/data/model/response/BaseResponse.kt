@@ -12,9 +12,5 @@ data class BaseResponse<T>(
     fun isSuccess(): Boolean {
         return this.code == 200
     }
-
-    fun hasData(): Boolean {
-        return this.code == 200 && this.data != null
-    }
 }
 

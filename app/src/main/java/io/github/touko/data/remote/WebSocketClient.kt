@@ -56,13 +56,14 @@ object ChatWebSocketManager {
         webSocket = client.newWebSocket(
             request,
             listener = object : WebSocketListener() {
-                // 创建websocket实例时重写listener中的onOpen回调，确保每次建立websocket连接时本地消息都是最新
+                // 确保每次建立websocket连接时本地消息都是最新
                 override fun onOpen(webSocket: WebSocket, response: Response) {
                     reconnectAttempt = 0
                     managerScope.launch(Dispatchers.IO) {
                         messageRepository.syncMessagesFromServer(LocalUserManager.getUid())
                     }
                 }
+
                 override fun onMessage(webSocket: WebSocket, text: String) {
                     try {
                         val message = Json.decodeFromString<Message>(text)
@@ -74,11 +75,13 @@ object ChatWebSocketManager {
                         Log.e("Touko", "解析消息失败: ${e.message}")
                     }
                 }
+
                 override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                     Log.e("Touko", "WebSocket 连接异常: ${t.message}")
                     if (!isManualClose)
                         reconnect()
                 }
+
                 override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                     Log.d("Touko", "WebSocket 已关闭: $reason")
                 }
@@ -88,9 +91,10 @@ object ChatWebSocketManager {
 
     @Synchronized
     private fun reconnect() {
-        if (isManualClose) return
-        if (reconnectJob?.isActive == true) return
-
+        if (isManualClose)
+            return
+        if (reconnectJob?.isActive == true)
+            return
         val delayTime = (2.0.pow(reconnectAttempt).toLong() * 1000)
             .coerceAtMost(30000)
         reconnectAttempt++

@@ -30,11 +30,10 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
-    var errorMessage by mutableStateOf<String?>("")
     private val messageRepository = MessageRepository()
 
+    var errorMessage by mutableStateOf<String?>("")
     var friendList by mutableStateOf<List<Friendship>>(emptyList())
-        private set
     var personList by mutableStateOf<List<TargetUser>>(emptyList())
     var friendApplyList by mutableStateOf<List<FriendshipApply>>(emptyList())
     var currentMainTab by mutableStateOf(CurrentMainTab.ChatList)

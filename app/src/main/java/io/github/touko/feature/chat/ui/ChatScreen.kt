@@ -28,10 +28,7 @@ fun ChatScreen(
 ) {
     val messages by viewModel.messageList.collectAsStateWithLifecycle()
     Scaffold(topBar = { ChatTopBar(friendName, stringResource(R.string.status_online)) }) { innerPadding ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             MessageList(
                 messageList = messages,
                 modifier = Modifier.padding(innerPadding)
